@@ -1,0 +1,3084 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>$200 Developer Credits 申请管理</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --surface: #ffffff;
+      --surface-soft: #f0f4f8;
+      --text: #172033;
+      --muted: #667085;
+      --line: #d8dee8;
+      --line-strong: #bac4d4;
+      --blue: #2563eb;
+      --blue-soft: #eaf1ff;
+      --green: #14804a;
+      --green-soft: #e8f6ee;
+      --amber: #a15c00;
+      --amber-soft: #fff3d6;
+      --red: #c43e3e;
+      --red-soft: #fdeaea;
+      --violet: #6d5bd0;
+      --violet-soft: #f0edff;
+      --shadow: 0 18px 50px rgba(17, 24, 39, 0.12);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.52;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 248px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      background: #111827;
+      color: #d6dbe6;
+      padding: 22px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 17px;
+      padding: 0 8px 8px;
+    }
+
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      background: #5a7df0;
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .nav {
+      display: grid;
+      gap: 4px;
+    }
+
+    .nav button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      color: #c4cad6;
+      background: transparent;
+      border-radius: 6px;
+      text-align: left;
+    }
+
+    .nav button.active {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.11);
+    }
+
+    .main {
+      min-width: 0;
+      padding: 22px 26px 88px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: 24px;
+      line-height: 1.25;
+      margin: 0 0 6px;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--line);
+      white-space: nowrap;
+    }
+
+    .btn:hover:not(:disabled) {
+      border-color: var(--line-strong);
+      background: #f9fbfd;
+    }
+
+    .btn.primary {
+      background: var(--blue);
+      color: #ffffff;
+      border-color: var(--blue);
+    }
+
+    .btn.primary:hover:not(:disabled) {
+      background: #1d55d8;
+    }
+
+    .btn.danger {
+      color: var(--red);
+      border-color: #efb9b9;
+      background: #fffafa;
+    }
+
+    .btn.ghost {
+      background: transparent;
+    }
+
+    .btn.small {
+      min-height: 32px;
+      padding: 6px 10px;
+    }
+
+    .batch-bar .btn.ghost {
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.42);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .batch-bar .btn.ghost:hover:not(:disabled) {
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.7);
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    .status-tabs {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding: 8px;
+      margin-bottom: 14px;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      white-space: nowrap;
+      font-weight: 750;
+    }
+
+    .tab-btn:hover {
+      background: #f5f7fb;
+      color: var(--text);
+    }
+
+    .tab-btn.active {
+      background: var(--blue-soft);
+      border-color: #c7d8ff;
+      color: var(--blue);
+    }
+
+    .tab-count {
+      min-width: 22px;
+      height: 22px;
+      display: inline-grid;
+      place-items: center;
+      padding: 0 7px;
+      border-radius: 999px;
+      background: rgba(102, 112, 133, 0.12);
+      color: inherit;
+      font-size: 12px;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: minmax(260px, 1.3fr) minmax(150px, 0.7fr) repeat(2, minmax(240px, 1fr)) minmax(150px, 0.8fr) minmax(170px, auto);
+      gap: 10px;
+      padding: 14px;
+      margin-bottom: 14px;
+      align-items: end;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field small {
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .summary-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(160px, 1fr));
+      gap: 10px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .summary-item {
+      display: grid;
+      gap: 4px;
+      padding: 0 12px;
+      border-left: 1px solid var(--line);
+    }
+
+    .summary-item:first-child {
+      border-left: 0;
+      padding-left: 0;
+    }
+
+    .summary-item span,
+    .readonly span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .summary-item strong {
+      font-size: 18px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .form-section {
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+    }
+
+    .form-section h3 {
+      margin: 0 0 12px;
+      font-size: 14px;
+    }
+
+    .readonly {
+      min-height: 68px;
+      padding: 10px;
+      display: grid;
+      align-content: center;
+      gap: 5px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface-soft);
+    }
+
+    .readonly strong {
+      font-size: 16px;
+    }
+
+    .filter-actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: end;
+      gap: 8px;
+    }
+
+    .date-range {
+      position: relative;
+    }
+
+    .date-range-trigger {
+      width: 100%;
+      min-height: 36px;
+      justify-content: space-between;
+      background: #ffffff;
+      color: var(--text);
+    }
+
+    .date-range-trigger span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .date-range-trigger.is-empty span {
+      color: #98a2b3;
+      font-weight: 400;
+    }
+
+    .date-range-panel {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      z-index: 15;
+      width: min(720px, calc(100vw - 32px));
+      display: none;
+      gap: 0;
+      padding: 0;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .date-range-panel.show {
+      display: grid;
+    }
+
+    .calendar-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .calendar-nav button {
+      width: 30px;
+      height: 30px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 6px;
+      background: transparent;
+      color: #98a2b3;
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .calendar-nav button:hover {
+      background: #f5f7fb;
+      color: var(--text);
+    }
+
+    .calendar-months {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      padding: 16px 22px 20px;
+    }
+
+    .calendar-month {
+      min-width: 0;
+    }
+
+    .calendar-title {
+      margin: 0 0 16px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 750;
+    }
+
+    .calendar-weekdays,
+    .calendar-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+    }
+
+    .calendar-weekdays {
+      margin-bottom: 8px;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .calendar-weekdays span {
+      padding: 6px 0;
+    }
+
+    .calendar-day {
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      background: transparent;
+      color: var(--text);
+      font-size: 16px;
+    }
+
+    .calendar-day:hover {
+      background: #eef4ff;
+    }
+
+    .calendar-day.muted {
+      color: #b8bec8;
+    }
+
+    .calendar-day.in-range {
+      background: #eaf1ff;
+      border-radius: 0;
+    }
+
+    .calendar-day.selected {
+      background: var(--blue);
+      color: #ffffff;
+      border-radius: 4px;
+    }
+
+    .calendar-day.focused {
+      box-shadow: inset 0 0 0 2px var(--blue);
+    }
+
+    .calendar-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    .calendar-hint {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      min-height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 8px 10px;
+      background: #ffffff;
+      color: var(--text);
+    }
+
+    textarea {
+      min-height: 86px;
+      resize: vertical;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: 2px solid rgba(37, 99, 235, 0.16);
+      border-color: var(--blue);
+    }
+
+    .table-wrap {
+      overflow: auto;
+      border-top: 1px solid var(--line);
+    }
+
+    table {
+      width: 100%;
+      min-width: 1880px;
+      border-collapse: collapse;
+    }
+
+    .topup-table {
+      min-width: 1180px;
+    }
+
+    .campaign-table {
+      min-width: 1220px;
+    }
+
+    .campaign-table .actions-col {
+      min-width: 120px;
+    }
+
+    .campaign-table .primary-cell,
+    .campaign-table .stacked {
+      display: grid;
+      gap: 3px;
+    }
+
+    .campaign-table .primary-cell span,
+    .campaign-table .stacked span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .campaign-table .primary-cell strong {
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #fbfcfe;
+      color: #475467;
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    tr:hover td {
+      background: #fbfcff;
+    }
+
+    .actions-col {
+      position: sticky;
+      right: 0;
+      z-index: 2;
+      min-width: 190px;
+      background: #ffffff;
+      box-shadow: -10px 0 16px rgba(17, 24, 39, 0.06);
+    }
+
+    th.actions-col {
+      z-index: 3;
+      background: #fbfcfe;
+    }
+
+    tr:hover .actions-col {
+      background: #fbfcff;
+    }
+
+    .applicant {
+      display: grid;
+      gap: 2px;
+    }
+
+    .applicant button {
+      width: fit-content;
+      background: transparent;
+      color: var(--blue);
+      padding: 0;
+      text-align: left;
+      font-weight: 700;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .truncate {
+      max-width: 220px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 24px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .badge.pending {
+      background: var(--amber-soft);
+      color: var(--amber);
+    }
+
+    .badge.approved {
+      background: var(--blue-soft);
+      color: var(--blue);
+    }
+
+    .badge.granted {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .badge.rejected {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .badge.failed {
+      background: var(--violet-soft);
+      color: var(--violet);
+    }
+
+    .badge.active {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .badge.paused {
+      background: var(--amber-soft);
+      color: var(--amber);
+    }
+
+    .badge.ended {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .icon-btn {
+      width: 32px;
+      height: 32px;
+      display: inline-grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #ffffff;
+      color: var(--text);
+    }
+
+    .batch-bar {
+      position: fixed;
+      left: 274px;
+      right: 26px;
+      bottom: 18px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 14px;
+      background: #172033;
+      color: #ffffff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      z-index: 10;
+    }
+
+    .batch-bar.show {
+      display: flex;
+    }
+
+    .batch-meta {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .batch-meta span {
+      color: #d8dee8;
+    }
+
+    .drawer-backdrop,
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      display: none;
+      background: rgba(17, 24, 39, 0.32);
+      z-index: 20;
+    }
+
+    .drawer-backdrop.show,
+    .modal-backdrop.show {
+      display: block;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(560px, 100vw);
+      height: 100vh;
+      background: var(--surface);
+      transform: translateX(100%);
+      transition: transform 180ms ease;
+      z-index: 21;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .drawer.show {
+      transform: translateX(0);
+    }
+
+    .drawer-head,
+    .drawer-foot {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .drawer-foot {
+      border-top: 1px solid var(--line);
+      border-bottom: 0;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .drawer-title {
+      display: grid;
+      gap: 4px;
+    }
+
+    .drawer-title strong {
+      font-size: 18px;
+    }
+
+    .drawer-body {
+      overflow: auto;
+      padding: 18px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .section {
+      display: grid;
+      gap: 10px;
+    }
+
+    .section h2 {
+      font-size: 14px;
+      margin: 0;
+      color: #344054;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .detail {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 10px;
+      min-width: 0;
+    }
+
+    .detail.full {
+      grid-column: 1 / -1;
+    }
+
+    .detail-label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    .detail-value {
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
+    .risk-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .risk {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: 6px;
+      background: var(--surface-soft);
+    }
+
+    .modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: min(520px, calc(100vw - 28px));
+      transform: translate(-50%, -48%) scale(0.98);
+      display: none;
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      z-index: 22;
+      overflow: hidden;
+    }
+
+    .modal.result-modal {
+      width: min(980px, calc(100vw - 28px));
+    }
+
+    .modal.show {
+      display: block;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .modal-head,
+    .modal-body,
+    .modal-foot {
+      padding: 16px;
+    }
+
+    .modal-head {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .modal-head h2 {
+      margin: 0 0 4px;
+      font-size: 18px;
+    }
+
+    .modal-body {
+      display: grid;
+      gap: 12px;
+    }
+
+    .modal-foot {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      border-top: 1px solid var(--line);
+    }
+
+    .summary-list {
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fbfcfe;
+    }
+
+    .notice {
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      line-height: 1.45;
+    }
+
+    .notice.danger {
+      color: var(--red);
+      border-color: #efb9b9;
+      background: var(--red-soft);
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .result-table-wrap {
+      max-height: 360px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+    }
+
+    .result-table {
+      min-width: 940px;
+      width: 100%;
+    }
+
+    .result-table th,
+    .result-table td {
+      padding: 10px;
+      white-space: nowrap;
+    }
+
+    .result-table td.wrap {
+      white-space: normal;
+      min-width: 180px;
+    }
+
+    .toast-stack {
+      position: fixed;
+      right: 18px;
+      top: 18px;
+      display: grid;
+      gap: 10px;
+      z-index: 40;
+    }
+
+    .toast {
+      min-width: 280px;
+      max-width: 360px;
+      padding: 12px 14px;
+      border-radius: var(--radius);
+      background: #172033;
+      color: #ffffff;
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 3px;
+    }
+
+    .toast .small {
+      color: #d8dee8;
+    }
+
+    .empty {
+      display: none;
+      padding: 34px 16px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .empty.show {
+      display: block;
+    }
+
+    @media (max-width: 1080px) {
+      .app {
+        grid-template-columns: 208px minmax(0, 1fr);
+      }
+
+      .filters {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .batch-bar {
+        left: 16px;
+        right: 16px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .main {
+        padding: 18px 14px 110px;
+      }
+
+      .topbar,
+      .batch-bar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .filters,
+      .detail-grid,
+      .form-grid,
+      .summary-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .header-actions,
+      .drawer-foot,
+      .modal-foot {
+        justify-content: stretch;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">TR</div>
+        <span>TokenRouter Admin</span>
+      </div>
+      <nav class="nav" aria-label="Admin navigation">
+        <button class="active" id="campaignsMenuBtn" type="button">Campaigns</button>
+        <button id="developerMenuBtn" type="button">Developer Credits</button>
+        <button id="topupMenuBtn" type="button">Top-up Match</button>
+      </nav>
+    </aside>
+
+    <main class="main hidden" id="developerPage">
+      <header class="topbar">
+        <div>
+          <h1>Developer Credits</h1>
+        </div>
+        <div class="header-actions">
+          <button class="btn primary" id="batchTopBtn" type="button" disabled>Batch GRANT</button>
+          <button class="btn danger" id="batchTopRejectBtn" type="button" disabled>Batch REJECT</button>
+        </div>
+      </header>
+
+      <section class="panel status-tabs" aria-label="Application status tabs">
+        <button class="tab-btn active" type="button" data-status-tab="PENDING">PENDING <span class="tab-count" id="tabPending">0</span></button>
+        <button class="tab-btn" type="button" data-status-tab="GRANTED">GRANTED <span class="tab-count" id="tabGranted">0</span></button>
+        <button class="tab-btn" type="button" data-status-tab="REJECTED">REJECTED <span class="tab-count" id="tabRejected">0</span></button>
+      </section>
+
+      <section class="panel filters" aria-label="Filters">
+        <div class="field">
+          <label for="searchInput">Search</label>
+          <input id="searchInput" type="search" placeholder="user id / user email / org id / org name / member id / member email">
+        </div>
+        <div class="field">
+          <label for="accountFilter">Applicant Type</label>
+          <select id="accountFilter">
+            <option value="All">All</option>
+            <option value="PERSONAL">PERSONAL</option>
+            <option value="ORGANIZATION">ORGANIZATION</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Submitted Time</label>
+          <div class="date-range" id="submittedRange">
+            <button class="btn date-range-trigger is-empty" id="submittedRangeBtn" type="button">
+              <span id="submittedRangeText">Select date range</span>
+              <span aria-hidden="true">⌄</span>
+            </button>
+            <div class="date-range-panel" id="submittedRangePanel">
+              <div id="submittedCalendar"></div>
+            </div>
+            <input id="submittedStart" type="hidden">
+            <input id="submittedEnd" type="hidden">
+          </div>
+        </div>
+        <div class="field">
+          <label>Reviewed Time</label>
+          <div class="date-range" id="reviewedRange">
+            <button class="btn date-range-trigger is-empty" id="reviewedRangeBtn" type="button">
+              <span id="reviewedRangeText">Select date range</span>
+              <span aria-hidden="true">⌄</span>
+            </button>
+            <div class="date-range-panel" id="reviewedRangePanel">
+              <div id="reviewedCalendar"></div>
+            </div>
+            <input id="reviewedStart" type="hidden">
+            <input id="reviewedEnd" type="hidden">
+          </div>
+        </div>
+        <div class="field">
+          <label for="reviewerFilter">Reviewer</label>
+          <select id="reviewerFilter">
+            <option value="All">All</option>
+            <option>christine.dai@tokenrouter.com</option>
+            <option>alex.chen@tokenrouter.com</option>
+            <option>Not reviewed</option>
+          </select>
+        </div>
+        <div class="filter-actions">
+          <button class="btn primary" id="searchBtn" type="button">Search</button>
+          <button class="btn" id="resetBtn" type="button">Reset</button>
+        </div>
+      </section>
+
+      <section class="panel" aria-label="Applications table">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><input id="selectAll" type="checkbox" aria-label="Select all eligible rows"></th>
+                <th>Applicant</th>
+                <th>Applicant Type</th>
+                <th>Full Name</th>
+                <th>Company</th>
+                <th>Role</th>
+                <th>Country</th>
+                <th>Monthly Spend</th>
+                <th>Currently Building</th>
+                <th>API Providers</th>
+                <th>Referral Source</th>
+                <th>Profile URL</th>
+                <th>Status</th>
+                <th>Submitted</th>
+                <th>Reviewed By</th>
+                <th>Granted Credits</th>
+                <th class="actions-col">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+          <div class="empty" id="emptyState">没有符合条件的申请记录。</div>
+        </div>
+      </section>
+    </main>
+
+    <main class="main hidden" id="topupPage">
+      <header class="topbar">
+        <div>
+          <h1>Top-up Match</h1>
+        </div>
+      </header>
+
+      <section class="panel filters" aria-label="Top-up filters">
+        <div class="field">
+          <label for="topupSearchInput">Search</label>
+          <input id="topupSearchInput" type="search" placeholder="user id / user email / org id / org name">
+        </div>
+        <div class="field">
+          <label for="topupApplicantTypeFilter">Applicant Type</label>
+          <select id="topupApplicantTypeFilter">
+            <option value="All">All</option>
+            <option value="PERSONAL">PERSONAL</option>
+            <option value="ORGANIZATION">ORGANIZATION</option>
+          </select>
+        </div>
+        <div class="filter-actions">
+          <button class="btn primary" id="topupSearchBtn" type="button">Search</button>
+          <button class="btn" id="topupResetBtn" type="button">Reset</button>
+        </div>
+      </section>
+
+      <section class="panel" aria-label="Top-up match table">
+        <div class="table-wrap">
+          <table class="topup-table">
+            <thead>
+              <tr>
+                <th>Applicant</th>
+                <th>Applicant Type</th>
+                <th>Top-up Amount</th>
+                <th>Top-up Time</th>
+                <th>Voucher Granted At</th>
+                <th>Voucher Amount</th>
+                <th>Voucher Expire At</th>
+                <th>Voucher ID</th>
+              </tr>
+            </thead>
+            <tbody id="topupTableBody"></tbody>
+          </table>
+          <div class="empty" id="topupEmptyState">No top-up match records found.</div>
+        </div>
+      </section>
+    </main>
+
+    <main class="main" id="campaignsPage">
+      <header class="page-header">
+        <div>
+          <h1>Campaigns</h1>
+        </div>
+      </header>
+
+      <section class="panel summary-strip" aria-label="Campaign budget summary">
+        <article class="summary-item">
+          <span>Total Campaigns</span>
+          <strong id="campaignTotalCount">0</strong>
+        </article>
+        <article class="summary-item">
+          <span>Total Granted</span>
+          <strong id="campaignGrantedTotal">$0</strong>
+        </article>
+        <article class="summary-item">
+          <span>Configured Budget</span>
+          <strong id="campaignBudgetTotal">Unlimited</strong>
+        </article>
+      </section>
+
+      <section class="panel" aria-label="Campaigns table">
+        <div class="table-wrap">
+          <table class="campaign-table">
+            <thead>
+              <tr>
+                <th>Campaign</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Schedule</th>
+                <th>Budget</th>
+                <th>Core Rules</th>
+                <th>Updated</th>
+                <th class="actions-col">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="campaignRows"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="batch-bar" id="batchBar">
+    <div class="batch-meta">
+      <strong id="selectedCount">0 users selected</strong>
+      <span id="selectedAmount">Estimated grant $0</span>
+      <span id="selectedBudget">Actions: GRANT / REJECT</span>
+    </div>
+    <div class="header-actions">
+      <button class="btn ghost" id="clearSelectionBtn" type="button">Clear</button>
+      <button class="btn primary" id="batchGrantBtn" type="button">Batch GRANT $200</button>
+      <button class="btn danger" id="batchRejectBtn" type="button">Batch REJECT</button>
+    </div>
+  </div>
+
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  <aside class="drawer" id="drawer" aria-label="Application detail" aria-hidden="true">
+    <div class="drawer-head">
+      <div class="drawer-title">
+        <strong id="drawerName">Applicant</strong>
+        <span class="small" id="drawerEmail">email@example.com</span>
+      </div>
+      <button class="icon-btn" id="closeDrawerBtn" type="button" aria-label="Close detail">×</button>
+    </div>
+    <div class="drawer-body" id="drawerBody"></div>
+    <div class="drawer-foot" id="drawerFoot"></div>
+  </aside>
+
+  <div class="drawer-backdrop" id="campaignDrawerBackdrop"></div>
+  <aside class="drawer" id="campaignDrawer" aria-label="Edit campaign" aria-hidden="true">
+    <div class="drawer-head">
+      <div class="drawer-title">
+        <strong>Edit Campaign</strong>
+        <span class="small" id="campaignDrawerCode"></span>
+      </div>
+      <button class="icon-btn" type="button" id="closeCampaignDrawerBtn" aria-label="Close campaign drawer">x</button>
+    </div>
+    <div class="drawer-body">
+      <div class="notice danger" id="campaignEndedNotice" hidden>This campaign has ended. The API no longer allows edits.</div>
+
+      <div class="form-grid">
+        <label class="field">
+          <span>Campaign Name</span>
+          <input id="campaignNameInput">
+        </label>
+        <label class="field">
+          <span>Status</span>
+          <select id="campaignStatusInput"></select>
+          <small>Allowed transitions: ACTIVE ↔ PAUSED, and ACTIVE/PAUSED → ENDED.</small>
+        </label>
+        <label class="field">
+          <span>Start Time</span>
+          <input id="campaignStartsAtInput" type="datetime-local">
+        </label>
+        <label class="field">
+          <span>End Time</span>
+          <input id="campaignEndsAtInput" type="datetime-local">
+        </label>
+        <label class="field">
+          <span>Total Budget USD</span>
+          <input id="campaignBudgetTotalInput" type="number" min="0" step="0.01">
+          <small id="campaignBudgetHint"></small>
+        </label>
+        <div class="readonly">
+          <span>Granted</span>
+          <strong id="campaignGrantedReadonly"></strong>
+        </div>
+      </div>
+
+      <div class="form-section" id="campaignDeveloperConfig">
+        <h3>Developer Credits Rules</h3>
+        <div class="form-grid">
+          <label class="field">
+            <span>Gift Amount USD</span>
+            <input id="campaignGiftAmountInput" type="number" min="0" step="0.01">
+          </label>
+          <label class="field">
+            <span>Expiration Days</span>
+            <input id="campaignExpireDaysInput" type="number" min="1" step="1">
+          </label>
+        </div>
+      </div>
+
+      <div class="form-section" id="campaignTopupConfig">
+        <h3>Top-up Match Rules</h3>
+        <div class="form-grid">
+          <label class="field">
+            <span>Minimum Top-up USD</span>
+            <input id="campaignMinTopupInput" type="number" min="0" step="0.01">
+          </label>
+          <label class="field">
+            <span>Per-user Bonus Cap USD</span>
+            <input id="campaignPerUserCapInput" type="number" min="0" step="0.01">
+          </label>
+          <label class="field">
+            <span>Bonus Ratio bps</span>
+            <input id="campaignBonusRatioInput" type="number" min="0" step="1">
+            <small>10000 = 100%</small>
+          </label>
+          <label class="field">
+            <span>Expiring Bonus bps</span>
+            <input id="campaignExpiringBonusInput" type="number" min="0" step="1">
+          </label>
+          <label class="field">
+            <span>Permanent Bonus bps</span>
+            <input id="campaignPermanentBonusInput" type="number" min="0" step="1">
+          </label>
+          <div class="readonly">
+            <span>Ratio Check</span>
+            <strong id="campaignRatioCheck">0 / 0</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-foot">
+      <button class="btn" type="button" id="cancelCampaignEditBtn">Cancel</button>
+      <button class="btn primary" type="button" id="saveCampaignBtn">Save Configuration</button>
+    </div>
+  </aside>
+
+  <div class="modal-backdrop" id="modalBackdrop"></div>
+
+  <section class="modal" id="campaignInitModal" aria-label="Initialize campaigns">
+    <div class="modal-head">
+      <h2>Initialize Campaigns</h2>
+      <div class="small">Idempotently upsert the Developer Credits and top-up match campaigns. Granted amounts will not be reset.</div>
+    </div>
+    <div class="modal-body">
+      <label class="field">
+        <span>Developer Credits Start Time</span>
+        <input id="initDeveloperStart" type="datetime-local" value="2026-05-01T00:00">
+      </label>
+      <label class="field">
+        <span>Developer Credits End Time</span>
+        <input id="initDeveloperEnd" type="datetime-local" value="2026-05-31T15:59">
+      </label>
+      <label class="field">
+        <span>Top-up Match Start Time</span>
+        <input id="initTopupStart" type="datetime-local" value="2026-05-01T00:00">
+      </label>
+      <label class="field">
+        <span>Top-up Match End Time</span>
+        <input id="initTopupEnd" type="datetime-local" value="2026-05-31T15:59">
+      </label>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" type="button" id="cancelCampaignInitBtn">Cancel</button>
+      <button class="btn primary" type="button" id="confirmCampaignInitBtn">Initialize</button>
+    </div>
+  </section>
+
+  <section class="modal" id="grantModal" role="dialog" aria-modal="true" aria-labelledby="grantTitle">
+    <div class="modal-head">
+      <h2 id="grantTitle">GRANT Applications</h2>
+      <div class="small">GRANT reads giftAmount and expireDays from campaign config, grants credits in one transaction, and increments budgetGranted.</div>
+    </div>
+    <div class="modal-body">
+      <div class="summary-list">
+        <div class="summary-row"><span>Selected Users</span><strong id="confirmUsers">0</strong></div>
+        <div class="summary-row"><span>Grant Amount per User</span><strong id="confirmAmountPerUser">$200</strong></div>
+        <div class="summary-row"><span>Total Grant Amount</span><strong id="confirmAmount">$0</strong></div>
+        <div class="summary-row"><span>Expire Days</span><strong id="confirmExpireDays">30 days</strong></div>
+      </div>
+      <div class="field">
+        <label for="grantNote">Internal Note</label>
+        <textarea id="grantNote" placeholder="Optional, visible to admins only"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="cancelGrantBtn" type="button">Cancel</button>
+      <button class="btn primary" id="confirmGrantBtn" type="button">Confirm Grant</button>
+    </div>
+  </section>
+
+  <section class="modal" id="rejectModal" role="dialog" aria-modal="true" aria-labelledby="rejectTitle">
+    <div class="modal-head">
+      <h2 id="rejectTitle">Reject application</h2>
+      <div class="small">REJECT only updates application status and review note. No wallet gift entry is created.</div>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label for="rejectNote">Internal Note</label>
+        <textarea id="rejectNote" placeholder="Optional, visible to admins only"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="cancelRejectBtn" type="button">Cancel</button>
+      <button class="btn danger" id="confirmRejectBtn" type="button">Reject</button>
+    </div>
+  </section>
+
+  <section class="modal result-modal" id="resultModal" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+    <div class="modal-head">
+      <h2 id="resultTitle">Batch Operation Result</h2>
+      <div class="small" id="resultSubtitle">result: Success</div>
+    </div>
+    <div class="modal-body">
+      <div class="summary-list">
+        <div class="summary-row"><span>Result</span><strong id="resultValue">Success</strong></div>
+        <div class="summary-row"><span>Success Count</span><strong id="resultSuccessCount">0</strong></div>
+        <div class="summary-row"><span>Failed Count</span><strong id="resultFailedCount">0</strong></div>
+      </div>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>Applicant</th>
+              <th>result</th>
+              <th>status</th>
+              <th>message</th>
+              <th>Voucher Id</th>
+              <th>Voucher Amount</th>
+              <th>Voucher Expire At</th>
+            </tr>
+          </thead>
+          <tbody id="resultItemsBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn primary" id="closeResultBtn" type="button">Done</button>
+    </div>
+  </section>
+
+  <div class="toast-stack" id="toastStack"></div>
+
+  <script>
+    const NANO_PER_USD = 1000000000n;
+    const campaign = {
+      id: "67b158ca-94df-4726-8054-83a69fa408ec",
+      code: "DEVELOPER_CREDIT_202605",
+      name: "Developer Credits 2026-05",
+      type: "DEVELOPER_CREDIT",
+      status: "ACTIVE",
+      startsAt: "2026-05-01T00:00:00.000Z",
+      endsAt: "2026-05-31T07:59:59.000Z",
+      budgetTotal: null,
+      budgetGranted: "400000000000",
+      configJson: {
+        giftAmount: "200000000000",
+        expireDays: 30
+      }
+    };
+
+    const campaignTypes = {
+      DEVELOPER_CREDIT: "Developer Credits",
+      TOPUP_MATCH: "Top-up Match"
+    };
+
+    const campaignStatusLabels = {
+      ACTIVE: "Active",
+      PAUSED: "Paused",
+      ENDED: "Ended"
+    };
+
+    let selectedIds = new Set();
+    let activeStatusTab = "PENDING";
+    let activeDetailId = null;
+    let selectedCampaignId = null;
+    let rejectTargetIds = [];
+    let grantTargetIds = [];
+    const dateRanges = {
+      submitted: { start: "", end: "", visibleMonth: new Date(2026, 4, 1) },
+      reviewed: { start: "", end: "", visibleMonth: new Date(2026, 4, 1) }
+    };
+    let appliedFilters = {
+      query: "",
+      applicantType: "All",
+      submittedStart: "",
+      submittedEnd: "",
+      reviewedStart: "",
+      reviewedEnd: "",
+      reviewer: "All"
+    };
+
+    const applications = [
+      {
+        id: "665c842e-8aad-4cb6-90de-6b0aa8c9fedc",
+        applicantType: "ORGANIZATION",
+        status: "PENDING",
+        walletUserId: "83bd35a6-c523-42ac-b078-ef0e87408d3c",
+        walletUserEmail: "maya@northstar.ai",
+        walletUserName: "Maya Stone",
+        orgId: "2ef5fae0-935a-4304-a3df-dfe09976cbf4",
+        orgName: "Northstar AI",
+        submittedByOrgMemberId: "db4c2d6b-5c69-44e3-9824-66980b49e5c3",
+        orgMemberName: "Maya Stone",
+        orgMemberLoginName: "maya@northstar.ai",
+        formJson: {
+          fullName: "Maya Stone",
+          profileUrl: "https://northstar.ai",
+          companyOrOrganization: "Northstar AI",
+          role: "Founder",
+          country: "United States",
+          currentlyBuilding: "Building an AI coding assistant for internal engineering workflows.",
+          apiProviders: ["OpenAI", "Anthropic", "Azure OpenAI"],
+          apiProvidersOther: null,
+          estimatedMonthlyApiSpend: "$5,000-$10,000",
+          referralSource: "LinkedIn"
+        },
+        reviewedByAdminId: null,
+        reviewedByAdminEmail: null,
+        reviewNote: null,
+        reviewedAt: null,
+        grantedAt: null,
+        giftAmount: null,
+        giftExpireAt: null,
+        notificationSeenAt: null,
+        createdAt: "2026-05-03T03:18:02.908Z",
+        updatedAt: "2026-05-03T03:18:02.908Z"
+      },
+      {
+        id: "c3d3a954-1bb9-4da4-bd77-93103397c5a2",
+        applicantType: "PERSONAL",
+        status: "PENDING",
+        walletUserId: "f9c1cbe3-640d-4a2d-8170-1f41c818f6a2",
+        walletUserEmail: "daniel@example.dev",
+        walletUserName: "Daniel Park",
+        orgId: null,
+        orgName: null,
+        submittedByOrgMemberId: null,
+        orgMemberName: null,
+        orgMemberLoginName: null,
+        formJson: {
+          fullName: "Daniel Park",
+          profileUrl: "https://github.com/dpark",
+          companyOrOrganization: "Independent",
+          role: "Developer",
+          country: "Canada",
+          currentlyBuilding: "Testing model routing for a personal research project.",
+          apiProviders: ["OpenAI", "None yet"],
+          apiProvidersOther: null,
+          estimatedMonthlyApiSpend: "$100-$500",
+          referralSource: "AI Community / Forum"
+        },
+        reviewedByAdminId: null,
+        reviewedByAdminEmail: null,
+        reviewNote: null,
+        reviewedAt: null,
+        grantedAt: null,
+        giftAmount: null,
+        giftExpireAt: null,
+        notificationSeenAt: null,
+        createdAt: "2026-05-03T04:20:12.000Z",
+        updatedAt: "2026-05-03T04:20:12.000Z"
+      },
+      {
+        id: "d1aed4a1-eb9e-4a92-bb03-6919695437fd",
+        applicantType: "ORGANIZATION",
+        status: "GRANTED",
+        walletUserId: "6d3a2e0f-a911-4018-8dfc-48d908f0916d",
+        walletUserEmail: "iris@blueforge.io",
+        walletUserName: "Iris Wang",
+        orgId: "4a2a64de-1bc9-44dc-91b1-e3aab3de703c",
+        orgName: "BlueForge",
+        submittedByOrgMemberId: "cd1e403a-50d1-43ae-8b2f-ecc66ba0500b",
+        orgMemberName: "Iris Wang",
+        orgMemberLoginName: "iris@blueforge.io",
+        formJson: {
+          fullName: "Iris Wang",
+          profileUrl: "https://blueforge.io",
+          companyOrOrganization: "BlueForge",
+          role: "Product Lead",
+          country: "Singapore",
+          currentlyBuilding: "Evaluating TokenRouter for multi-provider production fallback.",
+          apiProviders: ["OpenAI", "Google Gemini", "OpenRouter"],
+          apiProvidersOther: null,
+          estimatedMonthlyApiSpend: "$10,000+",
+          referralSource: "Conference or Event"
+        },
+        reviewedByAdminId: "96e22b64-dcc2-4c42-a161-780a1afcd222",
+        reviewedByAdminEmail: "alex.chen@tokenrouter.com",
+        reviewNote: "Strong production use case.",
+        reviewedAt: "2026-05-03T04:00:00.000Z",
+        grantedAt: "2026-05-03T04:00:00.000Z",
+        giftEntryId: "e86601c7-5214-49b1-a5f9-dc9d2fbadfcf",
+        giftAmount: "200000000000",
+        giftExpireAt: "2026-06-02T04:00:00.000Z",
+        notificationSeenAt: null,
+        createdAt: "2026-05-02T02:10:00.000Z",
+        updatedAt: "2026-05-03T04:00:00.000Z"
+      },
+      {
+        id: "7adf4f5f-c0a4-4d41-a45f-b4970273e0d8",
+        applicantType: "PERSONAL",
+        status: "PENDING",
+        walletUserId: "b2b0fd67-60d6-4453-9e61-83d5e8ed8c4b",
+        walletUserEmail: "leo@prototype.studio",
+        walletUserName: "Leo Martinez",
+        orgId: null,
+        orgName: null,
+        submittedByOrgMemberId: null,
+        orgMemberName: null,
+        orgMemberLoginName: null,
+        formJson: {
+          fullName: "Leo Martinez",
+          profileUrl: "https://prototype.studio",
+          companyOrOrganization: "Prototype Studio",
+          role: "Consultant",
+          country: "United Kingdom",
+          currentlyBuilding: "Prototype chatbot integrations for client demos.",
+          apiProviders: ["Anthropic", "Mistral"],
+          apiProvidersOther: null,
+          estimatedMonthlyApiSpend: "$500-$1,000",
+          referralSource: "Google Search"
+        },
+        reviewedByAdminId: null,
+        reviewedByAdminEmail: null,
+        reviewNote: null,
+        reviewedAt: null,
+        grantedAt: null,
+        giftAmount: null,
+        giftExpireAt: null,
+        notificationSeenAt: null,
+        createdAt: "2026-05-03T06:08:00.000Z",
+        updatedAt: "2026-05-03T06:08:00.000Z"
+      },
+      {
+        id: "c52e023d-5272-4319-b6e6-b80cc6769128",
+        applicantType: "ORGANIZATION",
+        status: "REJECTED",
+        walletUserId: "1f6d3ec6-93bb-43aa-a137-89c1c34b539f",
+        walletUserEmail: "anika@mlops.tools",
+        walletUserName: "Anika Rao",
+        orgId: "8f05fd25-0081-48ab-807d-cf57f6b2bcc7",
+        orgName: "MLOps Tools",
+        submittedByOrgMemberId: "90f8f7fb-f863-483e-8e10-9ed783f35bad",
+        orgMemberName: "Anika Rao",
+        orgMemberLoginName: "anika@mlops.tools",
+        formJson: {
+          fullName: "Anika Rao",
+          profileUrl: "https://mlops.tools",
+          companyOrOrganization: "MLOps Tools",
+          role: "Engineering Manager",
+          country: "Germany",
+          currentlyBuilding: "Benchmarking cost and latency across LLM providers.",
+          apiProviders: ["OpenRouter", "LiteLLM", "Together AI"],
+          apiProvidersOther: null,
+          estimatedMonthlyApiSpend: "$1,000-$5,000",
+          referralSource: "Newsletter"
+        },
+        reviewedByAdminId: "a59dcaf6-1817-47d9-95c3-1d20d0fb60f2",
+        reviewedByAdminEmail: "christine.dai@tokenrouter.com",
+        reviewNote: "Duplicate organization application.",
+        reviewedAt: "2026-05-03T02:30:00.000Z",
+        grantedAt: null,
+        giftAmount: null,
+        giftExpireAt: null,
+        notificationSeenAt: null,
+        createdAt: "2026-05-02T18:03:00.000Z",
+        updatedAt: "2026-05-03T02:30:00.000Z"
+      },
+      {
+        id: "eee92c9d-3c70-4d53-9b9a-f0e46ac65764",
+        applicantType: "PERSONAL",
+        status: "GRANTED",
+        walletUserId: "7621e8c9-c708-4449-85cc-3b5661ef698e",
+        walletUserEmail: "noah@prototype.dev",
+        walletUserName: "Noah Smith",
+        orgId: null,
+        orgName: null,
+        submittedByOrgMemberId: null,
+        orgMemberName: null,
+        orgMemberLoginName: null,
+        formJson: {
+          fullName: "Noah Smith",
+          profileUrl: null,
+          companyOrOrganization: null,
+          role: "Student",
+          country: "United States",
+          currentlyBuilding: "Trying model gateway options for a course project.",
+          apiProviders: ["None yet"],
+          apiProvidersOther: null,
+          estimatedMonthlyApiSpend: "Under $100",
+          referralSource: "YouTube"
+        },
+        reviewedByAdminId: "a59dcaf6-1817-47d9-95c3-1d20d0fb60f2",
+        reviewedByAdminEmail: "christine.dai@tokenrouter.com",
+        reviewNote: "Approved for education use case.",
+        reviewedAt: "2026-05-03T01:20:00.000Z",
+        grantedAt: "2026-05-03T01:20:00.000Z",
+        giftEntryId: "23662541-84e7-4933-88bc-f78706e9d81c",
+        giftAmount: "200000000000",
+        giftExpireAt: "2026-06-02T01:20:00.000Z",
+        notificationSeenAt: "2026-05-03T02:00:00.000Z",
+        createdAt: "2026-05-02T20:17:00.000Z",
+        updatedAt: "2026-05-03T02:00:00.000Z"
+      }
+    ];
+
+    const topupMatches = [
+      {
+        id: "TM-1001",
+        applicantType: "ORGANIZATION",
+        walletUserId: "83bd35a6-c523-42ac-b078-ef0e87408d3c",
+        walletUserEmail: "maya@northstar.ai",
+        walletUserName: "Maya Stone",
+        orgId: "2ef5fae0-935a-4304-a3df-dfe09976cbf4",
+        orgName: "Northstar AI",
+        topupAmount: "5000000000000",
+        topupAt: "2026-05-03T05:35:00.000Z",
+        voucherGrantedAt: "2026-05-03T05:35:04.000Z",
+        voucherAmount: "5000000000000",
+        voucherExpireAt: "2026-06-02T05:35:04.000Z",
+        voucherId: "6b389a4b-8128-420a-b7f1-f14112bd625a"
+      },
+      {
+        id: "TM-1002",
+        applicantType: "PERSONAL",
+        walletUserId: "f9c1cbe3-640d-4a2d-8170-1f41c818f6a2",
+        walletUserEmail: "daniel@example.dev",
+        walletUserName: "Daniel Park",
+        orgId: null,
+        orgName: null,
+        topupAmount: "100000000000",
+        topupAt: "2026-05-03T07:12:00.000Z",
+        voucherGrantedAt: "2026-05-03T07:12:03.000Z",
+        voucherAmount: "100000000000",
+        voucherExpireAt: "2026-06-02T07:12:03.000Z",
+        voucherId: "997d3513-53d6-44a2-bd91-8846c3333c86"
+      },
+      {
+        id: "TM-1003",
+        applicantType: "ORGANIZATION",
+        walletUserId: "6d3a2e0f-a911-4018-8dfc-48d908f0916d",
+        walletUserEmail: "iris@blueforge.io",
+        walletUserName: "Iris Wang",
+        orgId: "4a2a64de-1bc9-44dc-91b1-e3aab3de703c",
+        orgName: "BlueForge",
+        topupAmount: "10000000000000",
+        topupAt: "2026-05-04T01:48:00.000Z",
+        voucherGrantedAt: "2026-05-04T01:48:05.000Z",
+        voucherAmount: "10000000000000",
+        voucherExpireAt: "2026-06-03T01:48:05.000Z",
+        voucherId: "841ef3db-25fc-4617-9e8f-8f2a6d7a5e25"
+      },
+      {
+        id: "TM-1004",
+        applicantType: "PERSONAL",
+        walletUserId: "b2b0fd67-60d6-4453-9e61-83d5e8ed8c4b",
+        walletUserEmail: "leo@prototype.studio",
+        walletUserName: "Leo Martinez",
+        orgId: null,
+        orgName: null,
+        topupAmount: "500000000000",
+        topupAt: "2026-05-05T11:20:00.000Z",
+        voucherGrantedAt: "2026-05-05T11:20:02.000Z",
+        voucherAmount: "500000000000",
+        voucherExpireAt: "2026-06-04T11:20:02.000Z",
+        voucherId: "a2429564-b173-4ae0-901e-2cb1e15f129d"
+      }
+    ];
+
+    let topupAppliedFilters = {
+      query: "",
+      applicantType: "All"
+    };
+
+    let campaigns = [
+      {
+        id: "67b158ca-94df-4726-8054-83a69fa408ec",
+        code: "DEVELOPER_CREDIT_202605",
+        name: "Developer Credits 2026-05",
+        type: "DEVELOPER_CREDIT",
+        status: "ACTIVE",
+        startsAt: "2026-05-01T00:00:00.000Z",
+        endsAt: "2026-05-31T07:59:59.000Z",
+        budgetTotal: null,
+        budgetGranted: "1000000000000",
+        configJson: {
+          giftAmount: "200000000000",
+          expireDays: 30
+        },
+        updatedAt: "2026-05-03T03:23:11.000Z"
+      },
+      {
+        id: "a1b2c3d4-0000-0000-0000-000000000001",
+        code: "TOPUP_MATCH_202605",
+        name: "Top-up Match 2026-05",
+        type: "TOPUP_MATCH",
+        status: "PAUSED",
+        startsAt: "2026-05-01T00:00:00.000Z",
+        endsAt: "2026-05-31T07:59:59.000Z",
+        budgetTotal: "80000000000000",
+        budgetGranted: "12500000000000",
+        configJson: {
+          minTopupAmount: "50000000000",
+          bonusRatioBps: 10000,
+          expiringBonusBps: 5000,
+          permanentBonusBps: 5000,
+          perUserBonusCap: "50000000000000"
+        },
+        updatedAt: "2026-05-03T03:23:11.000Z"
+      }
+    ];
+
+    const els = {
+      campaignsMenuBtn: document.getElementById("campaignsMenuBtn"),
+      developerMenuBtn: document.getElementById("developerMenuBtn"),
+      topupMenuBtn: document.getElementById("topupMenuBtn"),
+      developerPage: document.getElementById("developerPage"),
+      topupPage: document.getElementById("topupPage"),
+      campaignsPage: document.getElementById("campaignsPage"),
+      tableBody: document.getElementById("tableBody"),
+      emptyState: document.getElementById("emptyState"),
+      searchInput: document.getElementById("searchInput"),
+      statusTabs: document.querySelectorAll("[data-status-tab]"),
+      tabPending: document.getElementById("tabPending"),
+      tabGranted: document.getElementById("tabGranted"),
+      tabRejected: document.getElementById("tabRejected"),
+      accountFilter: document.getElementById("accountFilter"),
+      submittedRange: document.getElementById("submittedRange"),
+      submittedRangeBtn: document.getElementById("submittedRangeBtn"),
+      submittedRangePanel: document.getElementById("submittedRangePanel"),
+      submittedRangeText: document.getElementById("submittedRangeText"),
+      submittedCalendar: document.getElementById("submittedCalendar"),
+      submittedStart: document.getElementById("submittedStart"),
+      submittedEnd: document.getElementById("submittedEnd"),
+      reviewedRange: document.getElementById("reviewedRange"),
+      reviewedRangeBtn: document.getElementById("reviewedRangeBtn"),
+      reviewedRangePanel: document.getElementById("reviewedRangePanel"),
+      reviewedRangeText: document.getElementById("reviewedRangeText"),
+      reviewedCalendar: document.getElementById("reviewedCalendar"),
+      reviewedStart: document.getElementById("reviewedStart"),
+      reviewedEnd: document.getElementById("reviewedEnd"),
+      reviewerFilter: document.getElementById("reviewerFilter"),
+      searchBtn: document.getElementById("searchBtn"),
+      resetBtn: document.getElementById("resetBtn"),
+      selectAll: document.getElementById("selectAll"),
+      batchBar: document.getElementById("batchBar"),
+      selectedCount: document.getElementById("selectedCount"),
+      selectedAmount: document.getElementById("selectedAmount"),
+      selectedBudget: document.getElementById("selectedBudget"),
+      batchGrantBtn: document.getElementById("batchGrantBtn"),
+      batchRejectBtn: document.getElementById("batchRejectBtn"),
+      batchTopBtn: document.getElementById("batchTopBtn"),
+      batchTopRejectBtn: document.getElementById("batchTopRejectBtn"),
+      clearSelectionBtn: document.getElementById("clearSelectionBtn"),
+      drawer: document.getElementById("drawer"),
+      drawerBackdrop: document.getElementById("drawerBackdrop"),
+      drawerName: document.getElementById("drawerName"),
+      drawerEmail: document.getElementById("drawerEmail"),
+      drawerBody: document.getElementById("drawerBody"),
+      drawerFoot: document.getElementById("drawerFoot"),
+      closeDrawerBtn: document.getElementById("closeDrawerBtn"),
+      modalBackdrop: document.getElementById("modalBackdrop"),
+      grantModal: document.getElementById("grantModal"),
+      confirmUsers: document.getElementById("confirmUsers"),
+      confirmAmountPerUser: document.getElementById("confirmAmountPerUser"),
+      confirmAmount: document.getElementById("confirmAmount"),
+      confirmExpireDays: document.getElementById("confirmExpireDays"),
+      grantNote: document.getElementById("grantNote"),
+      cancelGrantBtn: document.getElementById("cancelGrantBtn"),
+      confirmGrantBtn: document.getElementById("confirmGrantBtn"),
+      rejectModal: document.getElementById("rejectModal"),
+      rejectTitle: document.getElementById("rejectTitle"),
+      rejectNote: document.getElementById("rejectNote"),
+      cancelRejectBtn: document.getElementById("cancelRejectBtn"),
+      confirmRejectBtn: document.getElementById("confirmRejectBtn"),
+      resultModal: document.getElementById("resultModal"),
+      resultTitle: document.getElementById("resultTitle"),
+      resultSubtitle: document.getElementById("resultSubtitle"),
+      resultValue: document.getElementById("resultValue"),
+      resultSuccessCount: document.getElementById("resultSuccessCount"),
+      resultFailedCount: document.getElementById("resultFailedCount"),
+      resultItemsBody: document.getElementById("resultItemsBody"),
+      closeResultBtn: document.getElementById("closeResultBtn"),
+      topupSearchInput: document.getElementById("topupSearchInput"),
+      topupApplicantTypeFilter: document.getElementById("topupApplicantTypeFilter"),
+      topupSearchBtn: document.getElementById("topupSearchBtn"),
+      topupResetBtn: document.getElementById("topupResetBtn"),
+      topupTableBody: document.getElementById("topupTableBody"),
+      topupEmptyState: document.getElementById("topupEmptyState"),
+      campaignRows: document.getElementById("campaignRows"),
+      campaignTotalCount: document.getElementById("campaignTotalCount"),
+      campaignGrantedTotal: document.getElementById("campaignGrantedTotal"),
+      campaignBudgetTotal: document.getElementById("campaignBudgetTotal"),
+      campaignDrawer: document.getElementById("campaignDrawer"),
+      campaignDrawerBackdrop: document.getElementById("campaignDrawerBackdrop"),
+      closeCampaignDrawerBtn: document.getElementById("closeCampaignDrawerBtn"),
+      cancelCampaignEditBtn: document.getElementById("cancelCampaignEditBtn"),
+      saveCampaignBtn: document.getElementById("saveCampaignBtn"),
+      campaignDrawerCode: document.getElementById("campaignDrawerCode"),
+      campaignEndedNotice: document.getElementById("campaignEndedNotice"),
+      campaignNameInput: document.getElementById("campaignNameInput"),
+      campaignStatusInput: document.getElementById("campaignStatusInput"),
+      campaignStartsAtInput: document.getElementById("campaignStartsAtInput"),
+      campaignEndsAtInput: document.getElementById("campaignEndsAtInput"),
+      campaignBudgetTotalInput: document.getElementById("campaignBudgetTotalInput"),
+      campaignBudgetHint: document.getElementById("campaignBudgetHint"),
+      campaignGrantedReadonly: document.getElementById("campaignGrantedReadonly"),
+      campaignDeveloperConfig: document.getElementById("campaignDeveloperConfig"),
+      campaignGiftAmountInput: document.getElementById("campaignGiftAmountInput"),
+      campaignExpireDaysInput: document.getElementById("campaignExpireDaysInput"),
+      campaignTopupConfig: document.getElementById("campaignTopupConfig"),
+      campaignMinTopupInput: document.getElementById("campaignMinTopupInput"),
+      campaignPerUserCapInput: document.getElementById("campaignPerUserCapInput"),
+      campaignBonusRatioInput: document.getElementById("campaignBonusRatioInput"),
+      campaignExpiringBonusInput: document.getElementById("campaignExpiringBonusInput"),
+      campaignPermanentBonusInput: document.getElementById("campaignPermanentBonusInput"),
+      campaignRatioCheck: document.getElementById("campaignRatioCheck"),
+      campaignInitModal: document.getElementById("campaignInitModal"),
+      initDeveloperStart: document.getElementById("initDeveloperStart"),
+      initDeveloperEnd: document.getElementById("initDeveloperEnd"),
+      initTopupStart: document.getElementById("initTopupStart"),
+      initTopupEnd: document.getElementById("initTopupEnd"),
+      cancelCampaignInitBtn: document.getElementById("cancelCampaignInitBtn"),
+      confirmCampaignInitBtn: document.getElementById("confirmCampaignInitBtn"),
+      toastStack: document.getElementById("toastStack")
+    };
+
+    function usdFromNano(nano) {
+      if (!nano) return 0;
+      return Number(BigInt(nano) / NANO_PER_USD);
+    }
+
+    function money(value) {
+      return "$" + value.toLocaleString("en-US");
+    }
+
+    function formatMoneyFromNano(nano) {
+      if (!nano) return "-";
+      return money(usdFromNano(nano));
+    }
+
+    function usdToNano(value) {
+      if (value === "" || value === null || value === undefined) return null;
+      const amount = Number(value);
+      if (!Number.isFinite(amount)) return null;
+      return String(Math.round(amount * 1000000000));
+    }
+
+    function nanoToUsdInput(value) {
+      if (value === null || value === undefined || value === "") return "";
+      return String(Number(value) / 1000000000);
+    }
+
+    function toDatetimeLocal(value) {
+      if (!value) return "";
+      const date = new Date(value);
+      const offset = date.getTimezoneOffset() * 60000;
+      return new Date(date.getTime() - offset).toISOString().slice(0, 16);
+    }
+
+    function fromDatetimeLocal(value) {
+      if (!value) return null;
+      return new Date(value).toISOString();
+    }
+
+    function getGiftAmountNano() {
+      return campaign.configJson.giftAmount || "200000000000";
+    }
+
+    function getExpireDays() {
+      return Number.isFinite(campaign.configJson.expireDays) ? campaign.configJson.expireDays : 30;
+    }
+
+    function makeUuid() {
+      if (crypto && crypto.randomUUID) return crypto.randomUUID();
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (char) => {
+        const rand = Math.random() * 16 | 0;
+        const value = char === "x" ? rand : (rand & 0x3 | 0x8);
+        return value.toString(16);
+      });
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "-")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+    }
+
+    function formatResultApplicant(id) {
+      const app = applications.find((item) => item.id === id);
+      if (!app) return escapeHtml(id);
+      const email = escapeHtml(app.walletUserEmail || "-");
+      const name = escapeHtml(app.walletUserName || app.formJson.fullName || "-");
+      const userId = escapeHtml(app.walletUserId || "-");
+      return `<div class="applicant"><span>${email}</span><span>${name}</span><span class="small">${userId}</span></div>`;
+    }
+
+    function formatApplicant(record) {
+      return `
+        <div class="applicant">
+          <span>${escapeHtml(record.walletUserEmail || "-")}</span>
+          <span>${escapeHtml(record.walletUserName || "-")}</span>
+          <span class="small">${escapeHtml(record.walletUserId || "-")}</span>
+        </div>
+      `;
+    }
+
+    function formatDate(iso) {
+      if (!iso) return "-";
+      return new Intl.DateTimeFormat("en-US", {
+        month: "short",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+      }).format(new Date(iso));
+    }
+
+    function formatListDateTime(iso) {
+      if (!iso) return "-";
+      const date = new Date(iso);
+      const pad = (value) => String(value).padStart(2, "0");
+      return [
+        date.getFullYear(),
+        pad(date.getMonth() + 1),
+        pad(date.getDate())
+      ].join("-") + " " + [
+        pad(date.getHours()),
+        pad(date.getMinutes()),
+        pad(date.getSeconds())
+      ].join(":");
+    }
+
+    function formatCampaignMoney(nanoValue) {
+      if (nanoValue === null || nanoValue === undefined || nanoValue === "") return "Unlimited";
+      return money(Number(nanoValue) / 1000000000);
+    }
+
+    function formatCampaignDate(value) {
+      if (!value) return "Unlimited";
+      return new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+      }).format(new Date(value));
+    }
+
+    function isGrantable(app) {
+      return app.status === "PENDING";
+    }
+
+    function statusClass(status) {
+      return status.toLowerCase();
+    }
+
+    function isWithinDateRange(iso, startValue, endValue) {
+      if (!startValue && !endValue) return true;
+      if (!iso) return false;
+      const value = new Date(iso).getTime();
+      const start = startValue ? new Date(`${startValue}T00:00:00`).getTime() : -Infinity;
+      const end = endValue ? new Date(`${endValue}T23:59:59.999`).getTime() : Infinity;
+      return value >= start && value <= end;
+    }
+
+    function dateKey(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function addMonths(date, amount) {
+      return new Date(date.getFullYear(), date.getMonth() + amount, 1);
+    }
+
+    function monthTitle(date) {
+      return new Intl.DateTimeFormat("en-US", { month: "short", year: "numeric" }).format(date);
+    }
+
+    function rangeEls(key) {
+      if (key === "submitted") {
+        return {
+          root: els.submittedRange,
+          button: els.submittedRangeBtn,
+          panel: els.submittedRangePanel,
+          text: els.submittedRangeText,
+          calendar: els.submittedCalendar,
+          startInput: els.submittedStart,
+          endInput: els.submittedEnd
+        };
+      }
+      return {
+        root: els.reviewedRange,
+        button: els.reviewedRangeBtn,
+        panel: els.reviewedRangePanel,
+        text: els.reviewedRangeText,
+        calendar: els.reviewedCalendar,
+        startInput: els.reviewedStart,
+        endInput: els.reviewedEnd
+      };
+    }
+
+    function renderRangeText(key) {
+      const range = dateRanges[key];
+      const parts = rangeEls(key);
+      const start = range.start;
+      const end = range.end;
+      const hasRange = Boolean(start || end);
+      parts.startInput.value = start;
+      parts.endInput.value = end;
+      parts.text.textContent = hasRange ? `${start || "Any"} - ${end || "Any"}` : "Select date range";
+      parts.button.classList.toggle("is-empty", !hasRange);
+    }
+
+    function renderCalendar(key) {
+      const range = dateRanges[key];
+      const parts = rangeEls(key);
+      const leftMonth = range.visibleMonth;
+      const rightMonth = addMonths(leftMonth, 1);
+      parts.calendar.innerHTML = `
+        <div class="calendar-nav">
+          <button type="button" data-calendar-prev="${key}" aria-label="Previous month">‹</button>
+          <span></span>
+          <button type="button" data-calendar-next="${key}" aria-label="Next month">›</button>
+        </div>
+        <div class="calendar-months">
+          ${renderMonth(key, leftMonth)}
+          ${renderMonth(key, rightMonth)}
+        </div>
+        <div class="calendar-footer">
+          <span class="calendar-hint">Select a start date, then an end date.</span>
+          <button class="btn" type="button" data-calendar-clear="${key}">Clear</button>
+        </div>
+      `;
+      bindCalendar(key);
+      renderRangeText(key);
+    }
+
+    function renderMonth(key, monthDate) {
+      const weekdays = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+      const firstOfMonth = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
+      const gridStart = new Date(firstOfMonth);
+      gridStart.setDate(firstOfMonth.getDate() - firstOfMonth.getDay());
+      const days = [];
+      for (let i = 0; i < 42; i += 1) {
+        const day = new Date(gridStart);
+        day.setDate(gridStart.getDate() + i);
+        days.push(day);
+      }
+      return `
+        <div class="calendar-month">
+          <h3 class="calendar-title">${monthTitle(monthDate)}</h3>
+          <div class="calendar-weekdays">${weekdays.map((day) => `<span>${day}</span>`).join("")}</div>
+          <div class="calendar-days">
+            ${days.map((day) => renderDay(key, day, monthDate)).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderDay(key, day, monthDate) {
+      const range = dateRanges[key];
+      const value = dateKey(day);
+      const start = range.start;
+      const end = range.end;
+      const isMuted = day.getMonth() !== monthDate.getMonth();
+      const isSelected = value === start || value === end;
+      const isInRange = start && end && value > start && value < end;
+      const classes = ["calendar-day"];
+      if (isMuted) classes.push("muted");
+      if (isInRange) classes.push("in-range");
+      if (isSelected) classes.push("selected");
+      if (start && !end && value === start) classes.push("focused");
+      return `<button type="button" class="${classes.join(" ")}" data-calendar-day="${key}" data-date="${value}">${day.getDate()}</button>`;
+    }
+
+    function bindCalendar(key) {
+      const parts = rangeEls(key);
+      parts.calendar.querySelectorAll(`[data-calendar-day="${key}"]`).forEach((button) => {
+        button.addEventListener("click", () => selectRangeDate(key, button.dataset.date));
+      });
+      parts.calendar.querySelector(`[data-calendar-prev="${key}"]`).addEventListener("click", () => {
+        dateRanges[key].visibleMonth = addMonths(dateRanges[key].visibleMonth, -1);
+        renderCalendar(key);
+      });
+      parts.calendar.querySelector(`[data-calendar-next="${key}"]`).addEventListener("click", () => {
+        dateRanges[key].visibleMonth = addMonths(dateRanges[key].visibleMonth, 1);
+        renderCalendar(key);
+      });
+      parts.calendar.querySelector(`[data-calendar-clear="${key}"]`).addEventListener("click", () => {
+        clearRange(key);
+      });
+    }
+
+    function selectRangeDate(key, value) {
+      const range = dateRanges[key];
+      if (!range.start || range.end) {
+        range.start = value;
+        range.end = "";
+      } else if (value < range.start) {
+        range.end = range.start;
+        range.start = value;
+      } else {
+        range.end = value;
+      }
+      renderCalendar(key);
+    }
+
+    function clearRange(key) {
+      dateRanges[key].start = "";
+      dateRanges[key].end = "";
+      renderCalendar(key);
+    }
+
+    function openRange(key) {
+      ["submitted", "reviewed"].forEach((item) => {
+        const parts = rangeEls(item);
+        parts.panel.classList.toggle("show", item === key && !parts.panel.classList.contains("show"));
+      });
+    }
+
+    function closeRanges() {
+      els.submittedRangePanel.classList.remove("show");
+      els.reviewedRangePanel.classList.remove("show");
+    }
+
+    function applyFilters() {
+      appliedFilters = {
+        query: els.searchInput.value.trim().toLowerCase(),
+        applicantType: els.accountFilter.value,
+        submittedStart: dateRanges.submitted.start,
+        submittedEnd: dateRanges.submitted.end,
+        reviewedStart: dateRanges.reviewed.start,
+        reviewedEnd: dateRanges.reviewed.end,
+        reviewer: els.reviewerFilter.value
+      };
+      selectedIds.clear();
+      closeRanges();
+      renderTable();
+    }
+
+    function visibleApps() {
+      const query = appliedFilters.query;
+      return applications.filter((app) => {
+        const form = app.formJson;
+        const haystack = [
+          app.walletUserEmail,
+          app.walletUserName,
+          app.walletUserId,
+          app.orgId,
+          app.orgName,
+          app.submittedByOrgMemberId,
+          app.orgMemberLoginName,
+          form.fullName,
+          form.companyOrOrganization,
+          form.role,
+          form.country,
+          form.currentlyBuilding,
+          form.apiProviders.join(" "),
+          form.estimatedMonthlyApiSpend,
+          form.referralSource,
+          form.profileUrl
+        ].join(" ").toLowerCase();
+        const reviewer = app.reviewedByAdminEmail || "Not reviewed";
+        return (!query || haystack.includes(query))
+          && app.status === activeStatusTab
+          && (appliedFilters.applicantType === "All" || app.applicantType === appliedFilters.applicantType)
+          && isWithinDateRange(app.createdAt, appliedFilters.submittedStart, appliedFilters.submittedEnd)
+          && isWithinDateRange(app.reviewedAt, appliedFilters.reviewedStart, appliedFilters.reviewedEnd)
+          && (appliedFilters.reviewer === "All" || reviewer === appliedFilters.reviewer);
+      });
+    }
+
+    function renderStatusTabs() {
+      const counts = {
+        PENDING: applications.filter((app) => app.status === "PENDING").length,
+        GRANTED: applications.filter((app) => app.status === "GRANTED").length,
+        REJECTED: applications.filter((app) => app.status === "REJECTED").length
+      };
+      els.tabPending.textContent = counts.PENDING;
+      els.tabGranted.textContent = counts.GRANTED;
+      els.tabRejected.textContent = counts.REJECTED;
+      els.statusTabs.forEach((tab) => {
+        tab.classList.toggle("active", tab.dataset.statusTab === activeStatusTab);
+      });
+    }
+
+    function renderTable() {
+      const apps = visibleApps();
+      els.tableBody.innerHTML = apps.map((app) => {
+        const form = app.formJson;
+        const grantable = isGrantable(app);
+        const checked = selectedIds.has(app.id) ? "checked" : "";
+        const disabled = grantable ? "" : "disabled";
+        return `
+          <tr>
+            <td><input type="checkbox" data-select-id="${app.id}" ${checked} ${disabled} aria-label="Select ${form.fullName}"></td>
+            <td>
+              <div class="applicant">
+                <button type="button" data-view-id="${app.id}">${app.walletUserEmail || "-"}</button>
+                <span>${app.walletUserName || form.fullName || "-"}</span>
+                <span class="small">${app.walletUserId}</span>
+              </div>
+            </td>
+            <td>${app.applicantType}</td>
+            <td>${form.fullName}</td>
+            <td>${form.companyOrOrganization || app.orgName || "-"}</td>
+            <td>${form.role}</td>
+            <td>${form.country || "-"}</td>
+            <td>${form.estimatedMonthlyApiSpend}</td>
+            <td><div class="truncate" title="${form.currentlyBuilding}">${form.currentlyBuilding}</div></td>
+            <td><div class="truncate" title="${form.apiProviders.join(", ")}">${form.apiProviders.join(", ")}</div></td>
+            <td>${form.referralSource}</td>
+            <td><div class="truncate" title="${form.profileUrl || "-"}">${form.profileUrl || "-"}</div></td>
+            <td><span class="badge ${statusClass(app.status)}">${app.status}</span></td>
+            <td>${formatListDateTime(app.createdAt)}</td>
+            <td>${app.reviewedByAdminEmail || "-"}<div class="small">${formatListDateTime(app.reviewedAt)}</div></td>
+            <td>${formatMoneyFromNano(app.giftAmount)}<div class="small">${formatListDateTime(app.giftExpireAt)}</div></td>
+            <td class="actions-col">
+              <div class="row-actions">
+                <button class="btn" type="button" data-view-id="${app.id}">View</button>
+                ${grantable ? `<button class="btn primary" type="button" data-grant-id="${app.id}">GRANT</button><button class="btn danger" type="button" data-reject-id="${app.id}">REJECT</button>` : ""}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      els.emptyState.classList.toggle("show", apps.length === 0);
+      updateSelectAllState(apps);
+      bindRowEvents();
+      renderStatusTabs();
+      renderBatchBar();
+    }
+
+    function visibleTopupMatches() {
+      const query = topupAppliedFilters.query;
+      return topupMatches.filter((record) => {
+        const haystack = [
+          record.walletUserId,
+          record.walletUserEmail,
+          record.walletUserName,
+          record.orgId,
+          record.orgName,
+          record.voucherId
+        ].join(" ").toLowerCase();
+        return (!query || haystack.includes(query))
+          && (topupAppliedFilters.applicantType === "All" || record.applicantType === topupAppliedFilters.applicantType);
+      });
+    }
+
+    function renderTopupTable() {
+      const rows = visibleTopupMatches();
+      els.topupTableBody.innerHTML = rows.map((record) => `
+        <tr>
+          <td>${formatApplicant(record)}</td>
+          <td>${record.applicantType}</td>
+          <td>${formatMoneyFromNano(record.topupAmount)}</td>
+          <td>${formatListDateTime(record.topupAt)}</td>
+          <td>${formatListDateTime(record.voucherGrantedAt)}</td>
+          <td>${formatMoneyFromNano(record.voucherAmount)}</td>
+          <td>${formatListDateTime(record.voucherExpireAt)}</td>
+          <td><span class="small">${escapeHtml(record.voucherId)}</span></td>
+        </tr>
+      `).join("");
+      els.topupEmptyState.classList.toggle("show", rows.length === 0);
+    }
+
+    function renderCampaignConfig(campaignItem) {
+      const config = campaignItem.configJson || {};
+      if (campaignItem.type === "DEVELOPER_CREDIT") {
+        return `
+          <div class="stacked">
+            <span>Gift ${formatCampaignMoney(config.giftAmount)}</span>
+            <span>Expires in ${escapeHtml(config.expireDays)} days</span>
+          </div>
+        `;
+      }
+      return `
+        <div class="stacked">
+          <span>Minimum top-up ${formatCampaignMoney(config.minTopupAmount)}</span>
+          <span>Bonus ${Number(config.bonusRatioBps || 0) / 100}%</span>
+          <span>Cap ${formatCampaignMoney(config.perUserBonusCap)}</span>
+        </div>
+      `;
+    }
+
+    function renderCampaigns() {
+      const granted = campaigns.reduce((sum, item) => sum + Number(item.budgetGranted || 0), 0);
+      const budget = campaigns.reduce((sum, item) => sum + Number(item.budgetTotal || 0), 0);
+      els.campaignTotalCount.textContent = campaigns.length;
+      els.campaignGrantedTotal.textContent = formatCampaignMoney(String(granted));
+      els.campaignBudgetTotal.textContent = budget ? formatCampaignMoney(String(budget)) : "Unlimited";
+      els.campaignRows.innerHTML = campaigns.map((campaignItem) => `
+        <tr>
+          <td>
+            <div class="primary-cell">
+              <strong>${escapeHtml(campaignItem.name)}</strong>
+              <span>${escapeHtml(campaignItem.code)}</span>
+            </div>
+          </td>
+          <td>${escapeHtml(campaignTypes[campaignItem.type] || campaignItem.type)}</td>
+          <td><span class="badge ${campaignItem.status.toLowerCase()}">${escapeHtml(campaignStatusLabels[campaignItem.status] || campaignItem.status)}</span></td>
+          <td>
+            <div class="stacked">
+              <span>${formatListDateTime(campaignItem.startsAt)}</span>
+              <span>${formatListDateTime(campaignItem.endsAt)}</span>
+            </div>
+          </td>
+          <td>
+            <div class="stacked">
+              <span>Total ${formatCampaignMoney(campaignItem.budgetTotal)}</span>
+              <span>Granted ${formatCampaignMoney(campaignItem.budgetGranted)}</span>
+            </div>
+          </td>
+          <td>${renderCampaignConfig(campaignItem)}</td>
+          <td>${formatListDateTime(campaignItem.updatedAt)}</td>
+          <td class="actions-col"><button class="btn small" type="button" data-campaign-edit="${escapeHtml(campaignItem.id)}">Config</button></td>
+        </tr>
+      `).join("");
+      document.querySelectorAll("[data-campaign-edit]").forEach((button) => {
+        button.addEventListener("click", () => openCampaignDrawer(button.dataset.campaignEdit));
+      });
+    }
+
+    function showPage(page) {
+      const isTopup = page === "topup";
+      const isCampaigns = page === "campaigns";
+      els.developerPage.classList.toggle("hidden", isTopup || isCampaigns);
+      els.topupPage.classList.toggle("hidden", !isTopup);
+      els.campaignsPage.classList.toggle("hidden", !isCampaigns);
+      els.campaignsMenuBtn.classList.toggle("active", isCampaigns);
+      els.developerMenuBtn.classList.toggle("active", !isTopup && !isCampaigns);
+      els.topupMenuBtn.classList.toggle("active", isTopup);
+      els.batchBar.classList.remove("show");
+      selectedIds.clear();
+      if (isTopup) renderTopupTable();
+      else if (isCampaigns) renderCampaigns();
+      else renderTable();
+    }
+
+    function updateSelectAllState(apps) {
+      const grantableIds = apps.filter(isGrantable).map((app) => app.id);
+      const allSelected = grantableIds.length > 0 && grantableIds.every((id) => selectedIds.has(id));
+      const someSelected = grantableIds.some((id) => selectedIds.has(id));
+      els.selectAll.checked = allSelected;
+      els.selectAll.indeterminate = !allSelected && someSelected;
+      els.selectAll.disabled = grantableIds.length === 0;
+    }
+
+    function bindRowEvents() {
+      document.querySelectorAll("[data-view-id]").forEach((btn) => {
+        btn.addEventListener("click", () => openDrawer(btn.dataset.viewId));
+      });
+      document.querySelectorAll("[data-reject-id]").forEach((btn) => {
+        btn.addEventListener("click", () => openRejectModal([btn.dataset.rejectId]));
+      });
+      document.querySelectorAll("[data-grant-id]").forEach((btn) => {
+        btn.addEventListener("click", () => openGrantModal([btn.dataset.grantId]));
+      });
+      document.querySelectorAll("[data-select-id]").forEach((box) => {
+        box.addEventListener("change", () => {
+          if (box.checked) selectedIds.add(box.dataset.selectId);
+          else selectedIds.delete(box.dataset.selectId);
+          renderBatchBar();
+          updateSelectAllState(visibleApps());
+        });
+      });
+    }
+
+    function renderBatchBar() {
+      const validSelected = [...selectedIds].filter((id) => {
+        const app = applications.find((item) => item.id === id);
+        return app && isGrantable(app);
+      });
+      selectedIds = new Set(validSelected);
+      const count = validSelected.length;
+      const amount = count * usdFromNano(getGiftAmountNano());
+      els.batchBar.classList.toggle("show", count > 0);
+      els.selectedCount.textContent = `${count} ${count === 1 ? "user" : "users"} selected`;
+      els.selectedAmount.textContent = `Estimated grant ${money(amount)}`;
+      els.selectedBudget.textContent = "Actions: GRANT / REJECT";
+      els.batchGrantBtn.disabled = count === 0;
+      els.batchRejectBtn.disabled = count === 0;
+      els.batchTopBtn.disabled = count === 0;
+      els.batchTopRejectBtn.disabled = count === 0;
+    }
+
+    function openDrawer(id) {
+      activeDetailId = id;
+      const app = applications.find((item) => item.id === id);
+      if (!app) return;
+      const form = app.formJson;
+      els.drawerName.textContent = "Detail";
+      els.drawerEmail.textContent = `${form.fullName} · ${app.walletUserEmail || "-"}`;
+      els.drawerBody.innerHTML = `
+        <div class="section">
+          <h2>Application Summary</h2>
+          <div class="detail-grid">
+            ${detail("Application ID", app.id, true)}
+            ${detail("Applicant Type", app.applicantType)}
+            ${detail("Status", `<span class="badge ${statusClass(app.status)}">${app.status}</span>`)}
+            ${detail("Submitted At", app.createdAt)}
+            ${detail("Last Updated", app.updatedAt)}
+          </div>
+        </div>
+        <div class="section">
+          <h2>Account Information</h2>
+          <div class="detail-grid">
+            ${detail("User ID", app.walletUserId, true)}
+            ${detail("User Email", app.walletUserEmail || "-")}
+            ${detail("User Name", app.walletUserName || "-")}
+            ${detail("Organization ID", app.orgId || "-", true)}
+            ${detail("Organization Name", app.orgName || "-")}
+            ${detail("Member ID", app.submittedByOrgMemberId || "-", true)}
+            ${detail("Member Name", app.orgMemberName || "-")}
+            ${detail("Member Email", app.orgMemberLoginName || "-")}
+          </div>
+        </div>
+        <div class="section">
+          <h2>Application Form</h2>
+          <div class="detail-grid">
+            ${detail("Full Name", form.fullName)}
+            ${detail("Company / Organization", form.companyOrOrganization || "-")}
+            ${detail("Role", form.role)}
+            ${detail("Country", form.country || "-")}
+            ${detail("Profile URL", form.profileUrl || "-")}
+            ${detail("Estimated Monthly API Spend", form.estimatedMonthlyApiSpend)}
+            ${detail("How Did You Hear About Us", form.referralSource)}
+            ${detail("API Providers Currently Used", form.apiProviders.join(", "), true)}
+            ${form.apiProvidersOther ? detail("Other API Providers", form.apiProvidersOther, true) : ""}
+            ${detail("What Are You Currently Building", form.currentlyBuilding, true)}
+          </div>
+        </div>
+        <div class="section">
+          <h2>Review And Credits</h2>
+          <div class="detail-grid">
+            ${detail("Reviewed By Admin ID", app.reviewedByAdminId || "-", true)}
+            ${detail("Reviewed By", app.reviewedByAdminEmail || "-")}
+            ${detail("Reviewed At", app.reviewedAt || "-")}
+            ${detail("Review Note", app.reviewNote || "-", true)}
+            ${detail("Voucher Granted At", app.grantedAt || "-")}
+            ${detail("Voucher Amount", formatMoneyFromNano(app.giftAmount))}
+            ${detail("Voucher Expire At", app.giftExpireAt || "-")}
+            ${detail("Voucher ID", app.giftEntryId || "-")}
+          </div>
+        </div>
+      `;
+      els.drawerFoot.innerHTML = drawerActions(app);
+      bindDrawerActions();
+      els.drawer.classList.add("show");
+      els.drawerBackdrop.classList.add("show");
+      els.drawer.setAttribute("aria-hidden", "false");
+    }
+
+    function detail(label, value, full = false) {
+      return `<div class="detail ${full ? "full" : ""}"><div class="detail-label">${label}</div><div class="detail-value">${value}</div></div>`;
+    }
+
+    function drawerActions(app) {
+      const actions = [`<button class="btn" type="button" data-close-drawer>Close</button>`];
+      if (app.status === "PENDING") {
+        actions.push(`<button class="btn danger" type="button" data-drawer-reject="${app.id}">Reject</button>`);
+        actions.push(`<button class="btn primary" type="button" data-drawer-grant="${app.id}">GRANT $200 Credits</button>`);
+      }
+      return actions.join("");
+    }
+
+    function bindDrawerActions() {
+      document.querySelectorAll("[data-close-drawer]").forEach((btn) => btn.addEventListener("click", closeDrawer));
+      document.querySelectorAll("[data-drawer-reject]").forEach((btn) => {
+        btn.addEventListener("click", () => openRejectModal([btn.dataset.drawerReject]));
+      });
+      document.querySelectorAll("[data-drawer-grant]").forEach((btn) => {
+        btn.addEventListener("click", () => openGrantModal([btn.dataset.drawerGrant]));
+      });
+    }
+
+    function closeDrawer() {
+      els.drawer.classList.remove("show");
+      els.drawerBackdrop.classList.remove("show");
+      els.drawer.setAttribute("aria-hidden", "true");
+      activeDetailId = null;
+    }
+
+    function selectedCampaign() {
+      return campaigns.find((item) => item.id === selectedCampaignId);
+    }
+
+    function updateCampaignRatioCheck() {
+      const sum = Number(els.campaignExpiringBonusInput.value || 0) + Number(els.campaignPermanentBonusInput.value || 0);
+      els.campaignRatioCheck.textContent = `${sum} / ${els.campaignBonusRatioInput.value || 0}`;
+    }
+
+    function openCampaignDrawer(id) {
+      selectedCampaignId = id;
+      const item = selectedCampaign();
+      if (!item) return;
+      const config = item.configJson || {};
+      els.campaignDrawerCode.textContent = item.code;
+      els.campaignNameInput.value = item.name || "";
+      els.campaignStartsAtInput.value = toDatetimeLocal(item.startsAt);
+      els.campaignEndsAtInput.value = toDatetimeLocal(item.endsAt);
+      els.campaignBudgetTotalInput.value = nanoToUsdInput(item.budgetTotal);
+      els.campaignBudgetHint.textContent = `Must be at least the granted amount ${formatCampaignMoney(item.budgetGranted)}. Leave blank for unlimited budget.`;
+      els.campaignGrantedReadonly.textContent = formatCampaignMoney(item.budgetGranted);
+      els.campaignEndedNotice.hidden = item.status !== "ENDED";
+      els.saveCampaignBtn.disabled = item.status === "ENDED";
+      const allowedStatuses = item.status === "ENDED" ? ["ENDED"] : ["ACTIVE", "PAUSED", "ENDED"];
+      els.campaignStatusInput.innerHTML = allowedStatuses.map((status) => `<option value="${status}">${campaignStatusLabels[status]}</option>`).join("");
+      els.campaignStatusInput.value = item.status;
+      els.campaignDeveloperConfig.hidden = item.type !== "DEVELOPER_CREDIT";
+      els.campaignTopupConfig.hidden = item.type !== "TOPUP_MATCH";
+      els.campaignGiftAmountInput.value = nanoToUsdInput(config.giftAmount);
+      els.campaignExpireDaysInput.value = config.expireDays ?? "";
+      els.campaignMinTopupInput.value = nanoToUsdInput(config.minTopupAmount);
+      els.campaignPerUserCapInput.value = nanoToUsdInput(config.perUserBonusCap);
+      els.campaignBonusRatioInput.value = config.bonusRatioBps ?? "";
+      els.campaignExpiringBonusInput.value = config.expiringBonusBps ?? "";
+      els.campaignPermanentBonusInput.value = config.permanentBonusBps ?? "";
+      updateCampaignRatioCheck();
+      els.campaignDrawer.classList.add("show");
+      els.campaignDrawerBackdrop.classList.add("show");
+      els.campaignDrawer.setAttribute("aria-hidden", "false");
+    }
+
+    function closeCampaignDrawer() {
+      selectedCampaignId = null;
+      els.campaignDrawer.classList.remove("show");
+      els.campaignDrawerBackdrop.classList.remove("show");
+      els.campaignDrawer.setAttribute("aria-hidden", "true");
+    }
+
+    function validateCampaign(item, input) {
+      if (!input.name.trim()) return "Enter a campaign name.";
+      if (!input.startsAt) return "Select a start time.";
+      if (input.endsAt && new Date(input.endsAt) <= new Date(input.startsAt)) return "End time must be later than start time.";
+      if (input.budgetTotal !== null && Number(input.budgetTotal) < Number(item.budgetGranted)) return "Total budget cannot be lower than the granted amount.";
+
+      if (item.type === "DEVELOPER_CREDIT") {
+        if (Number(input.configJson.giftAmount) <= 0 || Number(input.configJson.expireDays) <= 0) {
+          return "Gift amount and expiration days must be greater than 0.";
+        }
+      }
+
+      if (item.type === "TOPUP_MATCH") {
+        const config = input.configJson;
+        if (Number(config.minTopupAmount) <= 0 || Number(config.perUserBonusCap) <= 0) {
+          return "Minimum top-up and per-user cap must be greater than 0.";
+        }
+        if (config.expiringBonusBps + config.permanentBonusBps !== config.bonusRatioBps) {
+          return "Expiring bonus bps + permanent bonus bps must equal the bonus ratio bps.";
+        }
+      }
+
+      return "";
+    }
+
+    function saveCampaign() {
+      const item = selectedCampaign();
+      if (!item) return;
+      const input = {
+        id: item.id,
+        name: els.campaignNameInput.value,
+        status: els.campaignStatusInput.value,
+        startsAt: fromDatetimeLocal(els.campaignStartsAtInput.value),
+        endsAt: fromDatetimeLocal(els.campaignEndsAtInput.value),
+        budgetTotal: usdToNano(els.campaignBudgetTotalInput.value),
+        configJson: item.type === "DEVELOPER_CREDIT"
+          ? {
+              giftAmount: usdToNano(els.campaignGiftAmountInput.value),
+              expireDays: Number(els.campaignExpireDaysInput.value)
+            }
+          : {
+              minTopupAmount: usdToNano(els.campaignMinTopupInput.value),
+              bonusRatioBps: Number(els.campaignBonusRatioInput.value),
+              expiringBonusBps: Number(els.campaignExpiringBonusInput.value),
+              permanentBonusBps: Number(els.campaignPermanentBonusInput.value),
+              perUserBonusCap: usdToNano(els.campaignPerUserCapInput.value)
+            }
+      };
+      const error = validateCampaign(item, input);
+      if (error) {
+        toast("Unable to Save", error);
+        return;
+      }
+      campaigns = campaigns.map((campaignItem) => campaignItem.id === item.id ? {
+        ...campaignItem,
+        name: input.name,
+        status: input.status,
+        startsAt: input.startsAt,
+        endsAt: input.endsAt,
+        budgetTotal: input.budgetTotal,
+        configJson: { ...campaignItem.configJson, ...input.configJson },
+        updatedAt: new Date().toISOString()
+      } : campaignItem);
+      renderCampaigns();
+      closeCampaignDrawer();
+      toast("Campaign Updated", `${item.code} configuration has been saved.`);
+      console.info("mutationUpdatePromotionCampaign variables", input);
+    }
+
+    function openCampaignInitModal() {
+      openModal(els.campaignInitModal);
+    }
+
+    function closeCampaignInitModal() {
+      els.campaignInitModal.classList.remove("show");
+      if (!els.grantModal.classList.contains("show") && !els.rejectModal.classList.contains("show") && !els.resultModal.classList.contains("show")) {
+        els.modalBackdrop.classList.remove("show");
+      }
+    }
+
+    function initCampaigns() {
+      const input = {
+        developerCreditStartsAt: fromDatetimeLocal(els.initDeveloperStart.value),
+        developerCreditEndsAt: fromDatetimeLocal(els.initDeveloperEnd.value),
+        topupMatchStartsAt: fromDatetimeLocal(els.initTopupStart.value),
+        topupMatchEndsAt: fromDatetimeLocal(els.initTopupEnd.value)
+      };
+
+      if (!input.developerCreditStartsAt || !input.topupMatchStartsAt) {
+        toast("Unable to Initialize", "Both campaigns require a start time.");
+        return;
+      }
+
+      campaigns = campaigns.map((campaignItem) => ({
+        ...campaignItem,
+        startsAt: campaignItem.type === "DEVELOPER_CREDIT" ? input.developerCreditStartsAt : input.topupMatchStartsAt,
+        endsAt: campaignItem.type === "DEVELOPER_CREDIT" ? input.developerCreditEndsAt : input.topupMatchEndsAt,
+        updatedAt: new Date().toISOString()
+      }));
+
+      renderCampaigns();
+      closeCampaignInitModal();
+      toast("Initialization Complete", "Developer Credits and top-up match campaigns have been upserted.");
+      console.info("mutationInitPromotionCampaigns variables", input);
+    }
+
+    function showResultModal(action, data) {
+      els.resultTitle.textContent = `${action} Result`;
+      els.resultSubtitle.textContent = 'result: "Success"';
+      els.resultValue.textContent = "Success";
+      els.resultSuccessCount.textContent = data.successCount;
+      els.resultFailedCount.textContent = data.failedCount;
+      els.resultItemsBody.innerHTML = data.items.map((item) => `
+        <tr>
+          <td class="wrap">${formatResultApplicant(item.id)}</td>
+          <td><span class="badge ${item.result === "Success" ? "granted" : "rejected"}">${escapeHtml(item.result)}</span></td>
+          <td>${escapeHtml(item.status)}</td>
+          <td class="wrap">${escapeHtml(item.message)}</td>
+          <td class="wrap">${escapeHtml(item.giftEntryId)}</td>
+          <td>${escapeHtml(item.giftAmount)}</td>
+          <td class="wrap">${escapeHtml(item.giftExpireAt)}</td>
+        </tr>
+      `).join("");
+      els.modalBackdrop.classList.add("show");
+      els.resultModal.classList.add("show");
+    }
+
+    function openRejectModal(ids, isBatch = false) {
+      rejectTargetIds = ids.filter((id) => {
+        const app = applications.find((item) => item.id === id);
+        return app && isGrantable(app);
+      });
+      if (rejectTargetIds.length === 0) return;
+      els.rejectTitle.textContent = isBatch || rejectTargetIds.length > 1 ? "REJECT Applications" : "Reject application";
+      els.rejectNote.value = "";
+      openModal(els.rejectModal);
+    }
+
+    function rejectApplication() {
+      let success = 0;
+      let failed = 0;
+      const items = [];
+      const now = new Date().toISOString();
+      const reviewNote = els.rejectNote.value.trim() || null;
+      rejectTargetIds.forEach((id) => {
+        const app = applications.find((item) => item.id === id);
+        if (!app || !isGrantable(app)) {
+          failed += 1;
+          items.push({
+            id,
+            result: "Error",
+            status: null,
+            message: app ? "APPLICATION_ALREADY_FINALIZED" : "APPLICATION_NOT_FOUND",
+            giftEntryId: null,
+            giftAmount: null,
+            giftExpireAt: null
+          });
+          return;
+        }
+        app.status = "REJECTED";
+        app.reviewedByAdminId = "a59dcaf6-1817-47d9-95c3-1d20d0fb60f2";
+        app.reviewedByAdminEmail = "christine.dai@tokenrouter.com";
+        app.reviewedAt = now;
+        app.reviewNote = reviewNote;
+      app.grantedAt = null;
+      app.giftEntryId = null;
+      app.giftAmount = null;
+        app.giftExpireAt = null;
+        app.notificationSeenAt = null;
+        app.updatedAt = now;
+        selectedIds.delete(id);
+        success += 1;
+        items.push({
+          id,
+          result: "Success",
+          status: "REJECTED",
+          message: null,
+          giftEntryId: null,
+          giftAmount: null,
+          giftExpireAt: null
+        });
+      });
+      const resultData = { successCount: success, failedCount: failed, items };
+      closeModals();
+      showResultModal("REJECT", resultData);
+      renderTable();
+      if (activeDetailId && applications.some((app) => app.id === activeDetailId)) openDrawer(activeDetailId);
+    }
+
+    function openGrantModal(ids) {
+      grantTargetIds = ids.filter((id) => {
+        const app = applications.find((item) => item.id === id);
+        return app && isGrantable(app);
+      });
+      if (grantTargetIds.length === 0) return;
+      const giftAmountNano = getGiftAmountNano();
+      const amount = grantTargetIds.length * usdFromNano(giftAmountNano);
+      els.confirmUsers.textContent = grantTargetIds.length;
+      els.confirmAmountPerUser.textContent = formatMoneyFromNano(giftAmountNano);
+      els.confirmAmount.textContent = money(amount);
+      els.confirmExpireDays.textContent = `${getExpireDays()} days`;
+      els.grantNote.value = "";
+      els.confirmGrantBtn.disabled = false;
+      openModal(els.grantModal);
+    }
+
+    function grantCredits() {
+      let success = 0;
+      let failed = 0;
+      const items = [];
+      const now = new Date();
+      const expireAt = new Date(now);
+      const giftAmountNano = getGiftAmountNano();
+      const reviewNote = els.grantNote.value.trim() || null;
+      expireAt.setDate(expireAt.getDate() + getExpireDays());
+      grantTargetIds.forEach((id) => {
+        const app = applications.find((item) => item.id === id);
+        if (!app || !isGrantable(app)) {
+          failed += 1;
+          items.push({
+            id,
+            result: "Error",
+            status: null,
+            message: app ? "APPLICATION_ALREADY_FINALIZED" : "APPLICATION_NOT_FOUND",
+            giftEntryId: null,
+            giftAmount: null,
+            giftExpireAt: null
+          });
+          return;
+        }
+        const giftEntryId = makeUuid();
+        app.status = "GRANTED";
+        app.reviewedByAdminId = "a59dcaf6-1817-47d9-95c3-1d20d0fb60f2";
+        app.reviewedByAdminEmail = "christine.dai@tokenrouter.com";
+        app.reviewNote = reviewNote;
+        app.reviewedAt = now.toISOString();
+        app.grantedAt = now.toISOString();
+        app.giftEntryId = giftEntryId;
+        app.giftAmount = giftAmountNano;
+        app.giftExpireAt = expireAt.toISOString();
+        app.notificationSeenAt = null;
+        app.updatedAt = now.toISOString();
+        campaign.budgetGranted = (BigInt(campaign.budgetGranted) + BigInt(giftAmountNano)).toString();
+        selectedIds.delete(id);
+        success += 1;
+        items.push({
+          id,
+          result: "Success",
+          status: "GRANTED",
+          message: null,
+          giftEntryId,
+          giftAmount: giftAmountNano,
+          giftExpireAt: app.giftExpireAt
+        });
+      });
+      const resultData = { successCount: success, failedCount: failed, items };
+      closeModals();
+      showResultModal("GRANT", resultData);
+      renderTable();
+      if (activeDetailId) openDrawer(activeDetailId);
+    }
+
+    function openModal(modal) {
+      els.modalBackdrop.classList.add("show");
+      modal.classList.add("show");
+    }
+
+    function closeModals() {
+      els.modalBackdrop.classList.remove("show");
+      els.campaignInitModal.classList.remove("show");
+      els.grantModal.classList.remove("show");
+      els.rejectModal.classList.remove("show");
+      els.resultModal.classList.remove("show");
+      rejectTargetIds = [];
+      grantTargetIds = [];
+    }
+
+    function toast(title, message) {
+      const node = document.createElement("div");
+      node.className = "toast";
+      node.innerHTML = `<strong>${title}</strong><span class="small">${message}</span>`;
+      els.toastStack.appendChild(node);
+      window.setTimeout(() => node.remove(), 3600);
+    }
+
+    function resetFilters() {
+      els.searchInput.value = "";
+      els.accountFilter.value = "All";
+      dateRanges.submitted.start = "";
+      dateRanges.submitted.end = "";
+      dateRanges.reviewed.start = "";
+      dateRanges.reviewed.end = "";
+      els.reviewerFilter.value = "All";
+      appliedFilters = {
+        query: "",
+        applicantType: "All",
+        submittedStart: "",
+        submittedEnd: "",
+        reviewedStart: "",
+        reviewedEnd: "",
+        reviewer: "All"
+      };
+      renderCalendar("submitted");
+      renderCalendar("reviewed");
+      closeRanges();
+      selectedIds.clear();
+      renderTable();
+    }
+
+    function applyTopupFilters() {
+      topupAppliedFilters = {
+        query: els.topupSearchInput.value.trim().toLowerCase(),
+        applicantType: els.topupApplicantTypeFilter.value
+      };
+      renderTopupTable();
+    }
+
+    function resetTopupFilters() {
+      els.topupSearchInput.value = "";
+      els.topupApplicantTypeFilter.value = "All";
+      topupAppliedFilters = {
+        query: "",
+        applicantType: "All"
+      };
+      renderTopupTable();
+    }
+
+    els.submittedRangeBtn.addEventListener("click", () => {
+      openRange("submitted");
+    });
+
+    els.reviewedRangeBtn.addEventListener("click", () => {
+      openRange("reviewed");
+    });
+
+    els.submittedRange.addEventListener("click", (event) => {
+      event.stopPropagation();
+    });
+
+    els.reviewedRange.addEventListener("click", (event) => {
+      event.stopPropagation();
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!els.submittedRange.contains(event.target) && !els.reviewedRange.contains(event.target)) closeRanges();
+    });
+
+    els.campaignsMenuBtn.addEventListener("click", () => showPage("campaigns"));
+    els.developerMenuBtn.addEventListener("click", () => showPage("developer"));
+    els.topupMenuBtn.addEventListener("click", () => showPage("topup"));
+    els.closeCampaignDrawerBtn.addEventListener("click", closeCampaignDrawer);
+    els.campaignDrawerBackdrop.addEventListener("click", closeCampaignDrawer);
+    els.cancelCampaignEditBtn.addEventListener("click", closeCampaignDrawer);
+    els.saveCampaignBtn.addEventListener("click", saveCampaign);
+    els.cancelCampaignInitBtn.addEventListener("click", closeCampaignInitModal);
+    els.confirmCampaignInitBtn.addEventListener("click", initCampaigns);
+    [els.campaignBonusRatioInput, els.campaignExpiringBonusInput, els.campaignPermanentBonusInput].forEach((input) => {
+      input.addEventListener("input", updateCampaignRatioCheck);
+    });
+    els.statusTabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        activeStatusTab = tab.dataset.statusTab;
+        selectedIds.clear();
+        renderTable();
+      });
+    });
+
+    els.searchBtn.addEventListener("click", applyFilters);
+    els.resetBtn.addEventListener("click", resetFilters);
+    els.topupSearchBtn.addEventListener("click", applyTopupFilters);
+    els.topupResetBtn.addEventListener("click", resetTopupFilters);
+    els.selectAll.addEventListener("change", () => {
+      const ids = visibleApps().filter(isGrantable).map((app) => app.id);
+      if (els.selectAll.checked) ids.forEach((id) => selectedIds.add(id));
+      else ids.forEach((id) => selectedIds.delete(id));
+      renderTable();
+    });
+    els.clearSelectionBtn.addEventListener("click", () => {
+      selectedIds.clear();
+      renderTable();
+    });
+    els.batchGrantBtn.addEventListener("click", () => openGrantModal([...selectedIds]));
+    els.batchRejectBtn.addEventListener("click", () => openRejectModal([...selectedIds], true));
+    els.batchTopBtn.addEventListener("click", () => openGrantModal([...selectedIds]));
+    els.batchTopRejectBtn.addEventListener("click", () => openRejectModal([...selectedIds], true));
+    els.closeDrawerBtn.addEventListener("click", closeDrawer);
+    els.drawerBackdrop.addEventListener("click", closeDrawer);
+    els.cancelGrantBtn.addEventListener("click", closeModals);
+    els.confirmGrantBtn.addEventListener("click", grantCredits);
+    els.cancelRejectBtn.addEventListener("click", closeModals);
+    els.confirmRejectBtn.addEventListener("click", rejectApplication);
+    els.closeResultBtn.addEventListener("click", closeModals);
+    els.modalBackdrop.addEventListener("click", closeModals);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeModals();
+        closeDrawer();
+        closeCampaignDrawer();
+      }
+    });
+
+    renderCalendar("submitted");
+    renderCalendar("reviewed");
+    renderTable();
+    renderTopupTable();
+    renderCampaigns();
+    showPage("campaigns");
+  </script>
+</body>
+</html>
