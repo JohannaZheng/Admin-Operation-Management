@@ -548,7 +548,7 @@
     }
 
     .topup-table {
-      min-width: 1180px;
+      min-width: 1320px;
     }
 
     .campaign-table {
@@ -1181,6 +1181,14 @@
             <option value="ORGANIZATION">ORGANIZATION</option>
           </select>
         </div>
+        <div class="field">
+          <label for="topupIdFilter">Top-up ID</label>
+          <input id="topupIdFilter" type="search" placeholder="Top-up ID">
+        </div>
+        <div class="field">
+          <label for="voucherIdFilter">Voucher ID</label>
+          <input id="voucherIdFilter" type="search" placeholder="Voucher ID">
+        </div>
         <div class="filter-actions">
           <button class="btn primary" id="topupSearchBtn" type="button">Search</button>
           <button class="btn" id="topupResetBtn" type="button">Reset</button>
@@ -1194,6 +1202,7 @@
               <tr>
                 <th>Applicant</th>
                 <th>Applicant Type</th>
+                <th>Top-up ID</th>
                 <th>Top-up Amount</th>
                 <th>Top-up Time</th>
                 <th>Voucher Granted At</th>
@@ -1487,7 +1496,7 @@
       status: "ACTIVE",
       startsAt: "2026-05-01T00:00:00.000Z",
       endsAt: "2026-05-31T07:59:59.000Z",
-      budgetTotal: null,
+      budgetTotal: "200000000000000",
       budgetGranted: "400000000000",
       configJson: {
         giftAmount: "200000000000",
@@ -1743,7 +1752,7 @@
 
     const topupMatches = [
       {
-        id: "TM-1001",
+        id: "6b389a4b-8128-420a-b7f1-f14112bd625a",
         applicantType: "ORGANIZATION",
         walletUserId: "83bd35a6-c523-42ac-b078-ef0e87408d3c",
         walletUserEmail: "maya@northstar.ai",
@@ -1758,7 +1767,7 @@
         voucherId: "6b389a4b-8128-420a-b7f1-f14112bd625a"
       },
       {
-        id: "TM-1002",
+        id: "997d3513-53d6-44a2-bd91-8846c3333c86",
         applicantType: "PERSONAL",
         walletUserId: "f9c1cbe3-640d-4a2d-8170-1f41c818f6a2",
         walletUserEmail: "daniel@example.dev",
@@ -1773,7 +1782,7 @@
         voucherId: "997d3513-53d6-44a2-bd91-8846c3333c86"
       },
       {
-        id: "TM-1003",
+        id: "841ef3db-25fc-4617-9e8f-8f2a6d7a5e25",
         applicantType: "ORGANIZATION",
         walletUserId: "6d3a2e0f-a911-4018-8dfc-48d908f0916d",
         walletUserEmail: "iris@blueforge.io",
@@ -1788,7 +1797,7 @@
         voucherId: "841ef3db-25fc-4617-9e8f-8f2a6d7a5e25"
       },
       {
-        id: "TM-1004",
+        id: "a2429564-b173-4ae0-901e-2cb1e15f129d",
         applicantType: "PERSONAL",
         walletUserId: "b2b0fd67-60d6-4453-9e61-83d5e8ed8c4b",
         walletUserEmail: "leo@prototype.studio",
@@ -1806,7 +1815,9 @@
 
     let topupAppliedFilters = {
       query: "",
-      applicantType: "All"
+      applicantType: "All",
+      topupId: "",
+      voucherId: ""
     };
 
     let campaigns = [
@@ -1818,7 +1829,7 @@
         status: "ACTIVE",
         startsAt: "2026-05-01T00:00:00.000Z",
         endsAt: "2026-05-31T07:59:59.000Z",
-        budgetTotal: null,
+        budgetTotal: "200000000000000",
         budgetGranted: "1000000000000",
         configJson: {
           giftAmount: "200000000000",
@@ -1834,10 +1845,10 @@
         status: "PAUSED",
         startsAt: "2026-05-01T00:00:00.000Z",
         endsAt: "2026-05-31T07:59:59.000Z",
-        budgetTotal: "80000000000000",
+        budgetTotal: "1800000000000000",
         budgetGranted: "12500000000000",
         configJson: {
-          minTopupAmount: "50000000000",
+          minTopupAmount: "5000000000",
           bonusRatioBps: 10000,
           expiringBonusBps: 5000,
           permanentBonusBps: 5000,
@@ -1920,6 +1931,8 @@
       closeResultBtn: document.getElementById("closeResultBtn"),
       topupSearchInput: document.getElementById("topupSearchInput"),
       topupApplicantTypeFilter: document.getElementById("topupApplicantTypeFilter"),
+      topupIdFilter: document.getElementById("topupIdFilter"),
+      voucherIdFilter: document.getElementById("voucherIdFilter"),
       topupSearchBtn: document.getElementById("topupSearchBtn"),
       topupResetBtn: document.getElementById("topupResetBtn"),
       topupTableBody: document.getElementById("topupTableBody"),
@@ -2375,6 +2388,8 @@
 
     function visibleTopupMatches() {
       const query = topupAppliedFilters.query;
+      const topupId = topupAppliedFilters.topupId;
+      const voucherId = topupAppliedFilters.voucherId;
       return topupMatches.filter((record) => {
         const haystack = [
           record.walletUserId,
@@ -2385,7 +2400,9 @@
           record.voucherId
         ].join(" ").toLowerCase();
         return (!query || haystack.includes(query))
-          && (topupAppliedFilters.applicantType === "All" || record.applicantType === topupAppliedFilters.applicantType);
+          && (topupAppliedFilters.applicantType === "All" || record.applicantType === topupAppliedFilters.applicantType)
+          && (!topupId || String(record.id).toLowerCase().includes(topupId))
+          && (!voucherId || String(record.voucherId).toLowerCase().includes(voucherId));
       });
     }
 
@@ -2395,6 +2412,7 @@
         <tr>
           <td>${formatApplicant(record)}</td>
           <td>${record.applicantType}</td>
+          <td><span class="small">${escapeHtml(record.id)}</span></td>
           <td>${formatMoneyFromNano(record.topupAmount)}</td>
           <td>${formatListDateTime(record.topupAt)}</td>
           <td>${formatListDateTime(record.voucherGrantedAt)}</td>
@@ -2427,10 +2445,9 @@
 
     function renderCampaigns() {
       const granted = campaigns.reduce((sum, item) => sum + Number(item.budgetGranted || 0), 0);
-      const budget = campaigns.reduce((sum, item) => sum + Number(item.budgetTotal || 0), 0);
       els.campaignTotalCount.textContent = campaigns.length;
       els.campaignGrantedTotal.textContent = formatCampaignMoney(String(granted));
-      els.campaignBudgetTotal.textContent = budget ? formatCampaignMoney(String(budget)) : "Unlimited";
+      els.campaignBudgetTotal.textContent = "$200,000";
       els.campaignRows.innerHTML = campaigns.map((campaignItem) => `
         <tr>
           <td>
@@ -2983,7 +3000,9 @@
     function applyTopupFilters() {
       topupAppliedFilters = {
         query: els.topupSearchInput.value.trim().toLowerCase(),
-        applicantType: els.topupApplicantTypeFilter.value
+        applicantType: els.topupApplicantTypeFilter.value,
+        topupId: els.topupIdFilter.value.trim().toLowerCase(),
+        voucherId: els.voucherIdFilter.value.trim().toLowerCase()
       };
       renderTopupTable();
     }
@@ -2991,9 +3010,13 @@
     function resetTopupFilters() {
       els.topupSearchInput.value = "";
       els.topupApplicantTypeFilter.value = "All";
+      els.topupIdFilter.value = "";
+      els.voucherIdFilter.value = "";
       topupAppliedFilters = {
         query: "",
-        applicantType: "All"
+        applicantType: "All",
+        topupId: "",
+        voucherId: ""
       };
       renderTopupTable();
     }
